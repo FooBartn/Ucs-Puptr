@@ -26,7 +26,7 @@ Process {
 
                 # Assert
                 try {
-                    $UcsFaults | Should BeNullOrEmpty
+                    $UcsFaults.count | Should Be 0
                 } catch {
                     throw $_
                 }
