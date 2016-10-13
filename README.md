@@ -1,18 +1,17 @@
-Vester
+Cisco UCS Puptr (pronounced "puppeteer")
 ======================
+#### -- Pester for UCS PowerTool Testing and Remediation
 
-Vester is a community project that aims to provide an extremely light-weight approach to vSphere configuration management using Pester and PowerCLI. The end-state configuration for each vSphere component, such as clusters and hosts, are abstracted into a simple config file. The configuration is tested and optionally remediated when drift is identified. The entire project is written in PowerShell.
-
-![Example](/Media/lab-config-example.jpg?raw=true "Example")
-
-Vester was featured in [INF8036 at VMworld 2016](https://youtu.be/hs4_DOwN-JU?t=20m36s)
+Cisco UCS Puptr is a community project forked from and built on the basis of Vester, which aims to provide an
+extremely light-weight approach to vSphere configuration management using Pester and PowerCLI. Puptr
+will serve the same purpose, but with Pester and Cisco UCS PowerTool.
 
 # Requirements
 
 You'll just need a few free pieces of software.
 
 1. PowerShell version 4+
-2. [PowerCLI version 5.8+](http://www.vmware.com/go/powercli)
+2. [Cisco UCS PowerTool 2.x+](https://communities.cisco.com/docs/DOC-37154)
 5. [Pester](https://github.com/pester/Pester)
 4. (optional) [Windows Management Framework 5.0](https://www.microsoft.com/en-us/download/details.aspx?id=50395)
 
@@ -22,11 +21,11 @@ Because this repository is simply a collection of Pester tests, there is no inst
 
 # Variables
 
-This project ultimately uses Pester to provide the testing framework. Because of this, we leverage a combination of Pester variables and custom ones written for Vester. If you're wondering why the command structure looks a bit complex, reference Pester [#271](https://github.com/pester/Pester/issues/271) and [#423](https://github.com/pester/Pester/issues/423).
+This project ultimately uses Pester to provide the testing framework. Because of this, we leverage a combination of Pester variables and custom ones written for Puptr. If you're wondering why the command structure looks a bit complex, reference Pester [#271](https://github.com/pester/Pester/issues/271) and [#423](https://github.com/pester/Pester/issues/423).
 
 ### `Path` (string)
 
-* Used to tell `Invoke-Pester` the relative path to where you have downloaded the Vester tests.
+* Used to tell `Invoke-Pester` the relative path to where you have downloaded the Puptr tests.
 * Some folks like to use different versions of tests, or subdivide tests into smaller groups.
 * The `path` input is required by Pester when sending parameters as shown in the examples below.
  
@@ -34,7 +33,7 @@ Default: None hard-coded. Your current location when calling Invoke-Pester, or t
 
 ### `Remediate` (bool)
 
-* Tells Vester in which mode to operate.
+* Tells PUPTR in which mode to operate.
 * Set to `$false` to report on differences without any remediation.
 * Set to `$true` to report on differences while also trying to remediate them.
 
@@ -42,14 +41,14 @@ Default: `$false`
 
 ### `Config` (string)
 
-* The relative path to where you have located a Vester config file.
+* The relative path to where you have located a PUPTR config file.
 * You can use multiple config files to represent your different environments, such as Prod and Dev, while at the same time using the same testing files.
 
-Default: `Vester\Configs\Config.ps1`
+Default: `PUPTR\Configs\Config.ps1`
 
 # Usage Instructions
 
-The end-state configuration for each vSphere component is stored inside of the `Config.ps1` file. Make sure to read through the configuration items and set them with your specific environmental variables for DRS, NTP, SSH, etc.
+The end-state configuration for each Cisco UCS component is stored inside of the `Config.ps1` file. Make sure to read through the configuration items and set them with your specific environmental variables for DRS, NTP, SSH, etc.
 
 If you have multiple environments that have unique settings, create a copy of the `Config.ps1` file for each environment and call it whatever you wish (such as `Config-Prod.ps1` for Production and `Config-Dev.ps1` for your Dev).
 
@@ -58,40 +57,40 @@ Once that's complete, you can start running Pester tests by opening your PowerSh
 [![Watch the Tutorial on YouTube](http://i.imgur.com/qXrGlar.png)](https://www.youtube.com/watch?v=CyVfzZ4jA8Q "Watch the Tutorial on YouTube")
 
 ### Example 1 - Validation using Defaults
-`Invoke-Pester .\Vester`
+`Invoke-Pester .\Puptr`
 
-* Runs all tests underneath directory `.\Vester`
+* Runs all tests underneath directory `.\Puptr`
 * Will validate that the default config file has proper values first, then run all tests
 * Uses the default remediation value of `$false` (disabled) - drift will be shown but not corrected
-* Uses the default configuration settings found in `.\Vester\Configs\Config.ps1`
+* Uses the default configuration settings found in `.\Puptr\Configs\Config.ps1`
 
 ### Example 2 - Validation using Different Config Values
-`Invoke-Pester -Script @{Path = '.\Vester'; Parameters = @{ Config = '.\Vester\Configs\Config-Prod.ps1' }}`
+`Invoke-Pester -Script @{Path = '.\Puptr'; Parameters = @{ Config = '.\Puptr\Configs\Config-Prod.ps1' }}`
 
-* Runs all tests underneath directory `.\Vester`. Path is mandatory if supplying a parameter
+* Runs all tests underneath directory `.\Puptr`. Path is mandatory if supplying a parameter
 * Will validate config and then run all tests
-* Configuration settings found in `.\Vester\Configs\Config-Prod.ps1` will be used
+* Configuration settings found in `.\Puptr\Configs\Config-Prod.ps1` will be used
 * By not supplying the Remediate parameter, it defaults to $false
 
 ### Example 3 - Remediation using Different Config Values
-`Invoke-Pester -Script @{Path = '.\Vester\Tests'; Parameters = @{ Remediate = $true ; Config = '.\Vester\Configs\Config-Prod.ps1' }}`
+`Invoke-Pester -Script @{Path = '.\Puptr\Tests'; Parameters = @{ Remediate = $true ; Config = '.\Puptr\Configs\Config-Prod.ps1' }}`
 
-* Runs all tests found in the path `.\Vester\Tests`
+* Runs all tests found in the path `.\Puptr\Tests`
 * Remediation is `$true` (enabled) - drift will be shown and also corrected
-* Configuration settings found in `.\Vester\Configs\Config-Prod.ps1` will be used
+* Configuration settings found in `.\Puptr\Configs\Config-Prod.ps1` will be used
 
 ### Example 4 - Single Test Validation and NUnit Output (for Jenkins, AppVeyor, etc.)
-`Invoke-Pester .\Vester\Tests -TestName '*DNS*' -OutputFormat NUnitXml -OutputFile .\Vester\results.xml`
+`Invoke-Pester .\Puptr\Tests -TestName '*DNS*' -OutputFormat NUnitXml -OutputFile .\Puptr\results.xml`
 
-* Runs any test under the path `.\Vester\Tests` with the string `DNS` found in the name
-* NUnitXml output will be created in the file .\Vester\results.xml
+* Runs any test under the path `.\Puptr\Tests` with the string `DNS` found in the name
+* NUnitXml output will be created in the file .\Puptr\results.xml
 * Because there are no hashtables `@{}`, defaults for Config/Remediate would be used
 * Can easily be combined with Examples 2-3 to use a different config file and/or remediate
 
 ### Example 5 - Validation using Tags
-`Invoke-Pester .\Vester\Tests -Tag host -ExcludeTag nfs`
+`Invoke-Pester .\Puptr\Tests -Tag host -ExcludeTag nfs`
 
-* At the path `.\Vester\Tests`, runs all tests with the "host" tag, except for those also tagged "nfs"
+* At the path `.\Puptr\Tests`, runs all tests with the "host" tag, except for those also tagged "nfs"
 * Because there are no hashtables `@{}`, defaults for Config/Remediate would be used
 * Can easily be combined with Examples 2-3 to use a different config file and/or remediate
  
@@ -107,18 +106,18 @@ Everyone is welcome to contribute to this project. The goal is to add fine-grain
 
 ### Contribution Requirements
 
-Every test that is added to Vester needs three things:
+Every test that is added to Puptr needs three things:
 
-1. An update to the example [`Config.ps1`](https://github.com/WahlNetwork/Vester/blob/master/Configs/Config.ps1) file with your required configuration value(s), comments, and accepted input type.
-2. An update to the [`Config.Tests.ps1`](https://github.com/WahlNetwork/Vester/blob/master/Configs/Config.Tests.ps1) file to validate that the `Config.ps1` file contains valid entries.
+1. An update to the example [`Config.ps1`](https://github.com/WahlNetwork/Puptr/blob/master/Configs/Config.ps1) file with your required configuration value(s), comments, and accepted input type.
+2. An update to the [`Config.Tests.ps1`](https://github.com/WahlNetwork/Puptr/blob/master/Configs/Config.Tests.ps1) file to validate that the `Config.ps1` file contains valid entries.
 3. A test file using a properly formatted `Verb-Noun` format (use `Get-Verb` for more details) placed into the Tests folder.
 
 ### Your First Contribution
 
 If you're looking for your first bit of code to add, try this list:
 
-1. Identify a configuration value in your vSphere environment that isn't being inspected by Vester.
-2. Use the [Template](https://github.com/WahlNetwork/Vester/blob/master/Templates/Update-Template.ps1) to create a test that inspects this value and try it out locally.
+1. Identify a configuration value in your vSphere environment that isn't being inspected by Puptr.
+2. Use the [Template](https://github.com/WahlNetwork/Puptr/blob/master/Templates/Update-Template.ps1) to create a test that inspects this value and try it out locally.
 3. At this point you can submit a pull request (PR) for a non-remediating test. If someone else wants the remediation code added, they will grab your code and write that portion.
 4. Optionally, write the remediation portion yourself to make a fully remediating test.
 
