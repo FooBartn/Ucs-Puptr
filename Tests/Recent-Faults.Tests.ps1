@@ -16,18 +16,20 @@ Process {
         . $Config
         [array]$SeverityFilter = $config.ucsm.FaultSeverity
 
-        It -Name "UCSM has no faults of severity: $SeverityFilter" -Test {
-            # Gather faults according to severity filter
-            $UcsFaults = Get-UcsFault |
-            Where-Object -FilterScript {
-                $SeverityFilter -contains $_.Severity
-            }
+        foreach ($UcsDomain in (Get-UcsStatus)) {
+            It -Name "$($UcsDomain.Name) has no faults of severity: $SeverityFilter" -Test {
+                # Gather faults according to severity filter
+                $UcsFaults = Get-UcsFault -Ucs $UcsDomain.Name |
+                Where-Object -FilterScript {
+                    $SeverityFilter -contains $_.Severity
+                }
 
-            # Assert
-            try {
-                $UcsFaults | Should BeNullOrEmpty
-            } catch {
-                throw $_
+                # Assert
+                try {
+                    $UcsFaults | Should BeNullOrEmpty
+                } catch {
+                    throw $_
+                }
             }
         }
     }
