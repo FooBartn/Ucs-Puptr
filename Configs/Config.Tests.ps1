@@ -1,4 +1,4 @@
-﻿#requires -Version 3 -Modules Pester, VMware.VimAutomation.Core
+#requires -Version 3 -Modules Pester
 
 [CmdletBinding()]
 Param(
@@ -19,104 +19,84 @@ Process {
             $config | Should Not BeNullOrEmpty
         }
 
-        It 'Contains proper settings for .vcenter' {
-            $config.vcenter.Keys | Should Match 'vc|smtpsender|smtpport|smtpserver|EventMaxAge|EventMaxAgeEnabled|TaskMaxAge|TaskMaxAgeEnabled'
-            $config.vcenter.Keys.Count | Should Be 8
-            $config.vcenter.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            $config.vcenter.smtpsender | Should BeOfType String
-            $config.vcenter.smtpport | Should BeOfType Int
-            $config.vcenter.smtpserver | Should BeOfType String
-            $config.vcenter.EventMaxAge | Should BeOfType Int
-            $config.vcenter.EventMaxAgeEnabled | Should BeOfType Bool
-            $config.vcenter.TaskMaxAge | Should BeOfType Int
-            $config.vcenter.TaskMaxAgeEnabled  | Should BeOfType Bool
-            # Connect, unless a connection that matches the .vc definition is found
-            If ($DefaultVIServer.Name -ne $config.vcenter.vc) {
-                # Optionally, un-comment the next line to ignore certificate warnings in the current session
-                # Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Scope Session -Confirm:$false | Out-Null
-                Connect-VIServer $config.vcenter.vc | Should Not BeNullOrEmpty
-            }
+        It 'Contains proper settings for .ucsm' {
+            $UcsmKeys = 'PoolUsageThreshold|FaultSeverity|FaultRetentionFrequency|FaultRetentionValue|'
+            $UcsmKeys += 'MaintenancePolicy|PoolAssignmentOrder|InfoPolicyState|FirmwareVersion'
+            $config.ucsm.Keys | Should Match $UcsmKeys
+            $config.ucsm.Keys.Count | Should Be 8
+            $config.ucsm.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
+            $config.ucsm.PoolUsageThreshold | Should Not BeGreaterThan 100
+            $config.ucsm.PoolUsageThreshold | Should Not BeLessThan 1
+            $config.ucsm.PoolUsageThreshold | Should BeOfType Int
+            $config.ucsm.FaultSeverity | Should Match 'critical|major|warning|info'
+            $config.ucsm.FaultSeverity | Should BeOfType String
+            $config.ucsm.FaultRetentionFrequency | Should Match 'forever|days|hours|minutes|seconds'
+            $config.ucsm.FaultRetentionFrequency | Should BeOfType String
+            $config.ucsm.FaultRetentionValue | Should BeOfType Int
+            $config.ucsm.MaintenancePolicy | Should Match 'user-ack|immediate|timer-automatic'
+            $config.ucsm.MaintenancePolicy | Should BeOfType String
+            $config.ucsm.PoolAssignmentOrder | Should Match 'default|sequential'
+            $config.ucsm.PoolAssignmentOrder | Should BeOfType String
+            $config.ucsm.InfoPolicyState | Should Match 'enabled|disabled'
+            $config.ucsm.InfoPolicyState | Should BeOfType String
+            $config.ucsm.FirmwareVersion | Should Match '^[1-3].[1-3]'
+            $config.ucsm.FirmwareVersion | Should BeOfType String
         }
 
-        It 'Contains proper settings for .scope' {
-            $config.scope.Keys | Should Match 'cluster|host|vm|vds'
-            $config.scope.Keys.Count | Should Be 4
-            $config.scope.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            Get-Cluster $config.scope.cluster | Should Not BeNullOrEmpty
-            Get-VMHost $config.scope.host | Should Not BeNullOrEmpty
-            Get-VM $config.scope.vm | Should Not BeNullOrEmpty
+        It 'Contains proper settings for .fabric' {
+            $SwitchModes = 'end-host|switch'
+            $config.fabric.Keys | Should Match 'EthernetSwitchMode|FcSwitchMode'
+            $config.fabric.Keys.Count | Should Be 2
+            $config.fabric.EthernetSwitchMode | Should Match $SwitchModes
+            $config.fabric.EthernetSwitchMode | Should BeOfType String
+            $config.fabric.FcSwitchMode | Should Match $SwitchModes
+            $config.fabric.FcSwitchMode | Should BeOfType String
         }
 
-        It 'Contains proper settings for .cluster' {
-            $config.cluster.Keys | Should Match 'drsmode|drslevel|haenable'
-            $config.cluster.Keys.Count | Should Be 3
-            $config.cluster.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            $config.cluster.drsmode | Should Match 'FullyAutomated|Manual|PartiallyAutomated'
-            $config.cluster.drslevel | Should BeOfType Int
-            $config.cluster.drslevel | Should Match '[1-5]'
-            $config.cluster.haenable | Should BeOfType Bool
+        It 'Contains proper settings for .server' {
+            $ServerKeys = 'MinimumChassisUplinks|LinkAggregation|PowerRedundancy|'
+            $ServerKeys += 'SELProtocol|SELRemoteStore|SELRemotePath|SELClearOnBackup|'
+            $ServerKeys += 'SELAction|SELInterval'
+            $config.server.Keys | Should Match $ServerKeys
+            $config.server.Keys.Count | Should Be 9
+            $config.server.MinimumChassisUplinks | Should Match '1|2|4|8|platform-max'
+            $config.server.MinimumChassisUplinks | Should BeOfType String
+            $config.server.LinkAggregation | Should Match 'none|port-channel'
+            $config.server.LinkAggregation | Should BeOfType String
+            $config.server.PowerRedundancy | Should Match 'non-redundant|n\+1|grid'
+            $config.server.PowerRedundancy | Should BeOfType String
+            $config.server.SELProtocol | Should BeOfType String
+            $config.server.SELRemotePath | Should BeOfType String
+            $config.server.SELClearOnBackup | Should Match 'yes|no'
+            $config.server.SELClearOnBackup | Should BeOfType String
+            $config.server.SELAction | Should Match 'log-full|on-assoc-change|on-clear|timer'
+            $config.server.SELAction | Should BeOfType String
+            $config.server.SELInterval | Should Match '1 hour|2 hours|4 hours|8 hours|24 hours|1 week|1 month'
+            $config.server.SELInterval | Should BeOfType String
         }
-
-        It 'Contains proper settings for .host' {
-            $HostKeys = 'sshenable|sshwarn|esxntp|esxdns|searchdomains|esxsyslog|esxsyslogfirewallexception|sshtimeout|sshinteractivetimeout'
-            $config.host.Keys | Should Match $HostKeys
-            $config.host.Keys.Count | Should Be 9
-            $config.host.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            $config.host.sshenable | Should BeOfType Bool
-            $config.host.sshwarn | Should BeOfType Int
-            $config.host.sshwarn | Should Match '[0-1]'
-            $config.host.esxntp | ForEach-Object {
-                (w32tm /stripchart /computer:$_ /dataonly /samples:1)[3] | Should Match '\d{2}\:\d{2}\:\d{2}\,'
-            }
-            $config.host.esxdns | ForEach-Object {
-                Resolve-DnsName -Name 'mit.edu' -Type A -Server $_ | Should Not BeNullOrEmpty
-            }
-            $config.host.searchdomains | ForEach-Object {
-                $_ | Should Not BeNullOrEmpty
-            }
-            $config.host.esxsyslog | ForEach-Object {
-                $_ | Should Not BeNullOrEmpty
-            }
-            $config.host.esxsyslogfirewallexception | Should BeOfType Bool
-            $config.host.sshtimeout | Should BeOfType Int
-            $config.host.sshinteractivetimeout | Should BeOfType Int
-        }
-
-        It 'Contains proper settings for .vm' {
-            $VMKeys = 'snapretention|allowconnectedcdrom|allowcpulimit|allowmemorylimit|syncTimeWithHost|bootDelay'
-            $config.vm.Keys | Should Match $VMKeys
-            $config.vm.Keys.Count | Should Be 6
-            $config.vm.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            $config.vm.snapretention | Should BeOfType Int
-            $config.vm.snapretention | Should BeGreaterThan -1
-            $config.vm.allowconnectedcdrom | Should BeOfType Bool
-            $config.vm.allowcpulimit | Should BeOfType Bool
-            $config.vm.allowmemorylimit | Should BeOfType Bool
-            $config.vm.syncTimeWithHost | Should BeOfType Bool
-            $config.vm.bootDelay | Should BeOfType Int
-        }
-
-        It 'Contains proper settings for .nfs' {
-            $NFSKeys = 'NFS\.HeartbeatFrequency|NFS\.DeleteRPCTimeout|NFS\.MaxQueueDepth|Net\.TcpipHeapSize|Net\.TcpipHeapMax|NFS\.MaxVolumes'
-            $config.nfsadvconfig.Keys | Should Match $NFSKeys
-            $config.nfsadvconfig.Keys.Count | Should Be 6
-            $config.nfsadvconfig.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            $NFSKeys -replace '\\','' -split '\|' | ForEach-Object {
-                $config.nfsadvconfig.$_ | Should BeOfType Int
-            }
-        }
-
-        It 'Contains proper settings for .vds' {
-            $VDSKeys = 'linkproto|linkoperation|mtu'
-            $config.vds.Keys | Should Match $VDSKeys
-            $config.vds.Keys.Count | Should Be 3
-            $config.vds.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
-            $config.vds.linkproto | Should BeOfType String
-            $config.vds.linkproto | Should Match 'LLDP|CDP'
-            $config.vds.linkoperation | Should BeOfType String
-            $config.vds.linkoperation | Should Match 'Listen|Advertise|Both|Disabled'
-            $config.vds.mtu | Should BeOfType Int
-            $config.vds.mtu | Should Match '[1500-9000]'
+        It 'Contains proper settings for .network' {
+            $NetworkKeys = 'CDPState|MACRegisterMode|UplinkFailureAction|PriorityFlowControl|'
+            $NetworkKeys += 'SendFlowControl|ReceiveFlowControl|LACPSuspend|LACPRate|UDLDState|'
+            $NetworkKeys += 'UDLDMode|UDLDRecoveryAction|UDLDRecoveryInterval|'
+            $NetworkKeys += 'DefaultVnicBehavior|DefaultVhbaBehavior|MacForging'
+            $config.network.Keys | Should Match $NetworkKeys
+            $config.network.Keys.Count | Should Be 15
+            $config.network.CDPState | Should Match 'enabled|disabled'
+            $config.network.CDPState | Should BeOfType String
+            $config.network.MACRegisterMode | Should Match 'only-native-vlan|all-host-vlans'
+            $config.network.MACRegisterMode | Should BeOfType String
+            $config.network.UplinkFailureAction | Should Match 'link-down|warning'
+            $config.network.UplinkFailureAction | Should BeOfType String
+            $config.network.PriorityFlowControl | Should Match 'auto|on'
+            $config.network.PriorityFlowControl | Should BeOfType String
+            $config.network.SendFlowControl | Should Match 'on|off'
+            $config.network.SendFlowControl | Should BeOfType String
+            $config.network.ReceiveFlowControl | Should Match 'on|off'
+            $config.network.ReceiveFlowControl | Should BeOfType String
+            $config.network.LACPSuspend | Should Match 'true|false'
+            $config.network.LACPSuspend | Should BeOfType String
+            $config.network.LACPRate | Should Match 'normal|fast'
+            
         }
     } #Describe
 } #Process

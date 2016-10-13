@@ -1,124 +1,97 @@
-﻿$config = @{}
+$config = @{}
 
 <########################################################################################
-        Scope Settings
-        This dictates the scope of your vSphere environment that will be tested by Pester.
-        Use string values. Wildcards are accepted.
-        cluster = [string] vSphere cluster names
-        host = [string] ESXi host names
-        vm = [string] Virtual machine names
-        vds = [string] vSphere Distributed Switch (VDS) names
+        UCSM Settings
+        PoolUsageThreshold = [string] Threshold for percentage of UID pool used
+        FaultSeverity = [array] Fault severity levels to check for (critical/major/warning/info)
+        FaultRetentionFrequency = [string] Fault retention frequency (forever, days, hours, minutes, seconds)
+        FaultRetentionValue = [int] Duration pertaining to retention frequency (ie, '7' days)
+        MaintenancePolicy = [string] Maintenance Policy disruption setting (user-ack/immediate/timer-automatic)
+        PoolAssignmentOrder = [string] Pool assignment order (default/sequential)
+        InfoPolicyState = [string] Info Policy state (enabled/disabled)
+        FirmwareVersion = [string] Expected firmware release (usually formed as Major.Minor(BugFix). Example: 3.1(1g))
 #>
 
-$config.scope = @{
-    cluster = '*'
-    host    = '*'
-    vm      = '*'
-    vds     = '*'
-
+$config.ucsm = @{
+    PoolUsageThreshold = [int]80
+    FaultSeverity = @('critical','major')
+    FaultRetentionFrequency = [string]'days'
+    FaultRetentionValue = [int]7
+    MaintenancePolicy = [string]'user-ack'
+    PoolAssignmentOrder = [string]'sequential'
+    InfoPolicyState = [string]'enabled'
+    FirmwareVersion = [string]'3.1(1g)'
 }
 
 <########################################################################################
-        vCenter Settings
-        vc = [string] vCenter IP Address
-        smtpsender = [string] SMTP Address used for emails sent from vCenter Server
-        smtpport = [int] Port used to connect to SMTP Server
-        smtpserver = [string] SMTP Server used by vCenter to relay emails
-	EventMaxAge = [int] Age in days that Events will be retained in the vCenter Server Database
-        EventMaxAgeEnabled = [bool] Enables Event cleanup and enforces the max age defined in EventMaxAge
-        TaskMaxAge = [int] Age in days that Tasks will be retained in the vCenter Server Database
-        TaskMaxAgeEnabled = [bool]Enables Task cleanup and enforces the max age defined in TaskMaxAge
+        Fabric Interconnect Settings
+        EthernetSwitchMode = [string] Ethernet (LAN) switch mode (end-host/switch)
+        FcSwitchMode = [string] Fiber Channel (SAN) switch mode (end-host/switch) 
 #>
 
-$config.vcenter = @{
-    vc = [string]'172.17.48.17'
-    smtpsender = [string]'vcenter@domain.com'
-    smtpport = [int]'25'
-    smtpserver = [string]'mailserver.domain.com'
-    EventMaxAge = [int]'30'
-    EventMaxAgeEnabled = [bool]$True
-    TaskMaxAge = [int]'30'
-    TaskMaxAgeEnabled = [bool]$True
+$config.fabric = @{
+    EthernetSwitchMode = [string]'end-host'
+    FcSwitchMode = [string]'end-host'
 }
 
 <########################################################################################
-        Cluster Settings
-        drsmode = [string] FullyAutomated, Manual, or PartiallyAutomated
-        drslevel = [int] 1 (Aggressive), 2, 3, 4, 5 (Conservative)
-        haenable = [bool] $true or $false
+        Chassis/Server Settings
+        MinimumChassisUplinks = [string] Minimum number of uplinks required to discover Chassis/FEX(1/2/4/8/platform-max)
+        LinkAggregation = [string] Link aggregation (none/port-channel)
+        PowerRedundancy = [string] Power redundancy setting (non-redundant/n+1/grid)
+        SELProtocol = [string] Protocol for sending SEL logs to remote location (ftp/tftp/scp/sftp)
+        SELRemoteStore = [string] Hostname or IP for remote storage location
+        SELRemotePath = [string] Storage path on remote location
+        SELClearOnBackup = [string] Clear SEL logs when they are backed up (yes/no)
+        SELAction = [string] When to offload SEL logs. Use braces and choose one or more options separated by commas {log-full, on-assoc-change, on-clear, timer}
+        SELInterval = [string] Interval if timer is set as a SelAction.  {1 hour/2 hours/4 hours/8 hours/24 hours/1 week/1 month}
 #>
 
-$config.cluster = @{
-    drsmode  = [string]'FullyAutomated'
-    drslevel = [int]2
-    haenable = [bool]$true
+$config.server = @{
+    MinimumChassisUplinks = [string]'4'
+    LinkAggregation = [string]'port-channel'
+    PowerRedundancy = [string]'grid'
+    SELProtocol = [string]'sftp'
+    SELRemoteStore = [string]'sftp.domain.org'
+    SELRemotePath = [string]'/'
+    SELClearOnBackup = [string]'yes'
+    SELAction = @('log-full','on-clear')
+    SELInterval = '1 hour'
 }
 
 <########################################################################################
-        ESXi Host Settings
-        sshenable = [bool] $true or $false
-        sshwarn = [int] 1 (off) or 0 (on)
-        esxntp = [array] @('NTP Server 1', 'NTP Server 2 (optional)', 'NTP Server 3 (optional)', 'NTP Server 4 (optional)')
-        esxdns = [array] @('DNS Server 1', 'DNS Server 2 (optional)')
-        searchdomains = [array] @('Domain 1', 'Domain 2 (optional)')
-        esxsyslog = [array] @('tcp://ip_address:port')
-        esxsyslogfirewallexception = [bool] $true or $false
+        Network Settings
+        CDPState = [string] Cisco Discovery Protocol state (enabled/disabled)
+        MACRegisterMode = [string] MAC address register mode (only-native-vlan/all-host-vlans)
+        UplinkFailureAction = [string] Action to take on  uplink failure (link-down/warning)
+        PriorityFlowControl = [string] Priority Flow Control setting (auto/on)
+        SendFlowControl = [string] Send Flow Control setting (on/off)
+        ReceiveFlowControl = [string] Receive Flow Control setting (on/off)
+        LACPSuspend = [string] LACP Suspend Individual enabled (true/false)
+        LACPRate = [string] LACP Rate setting (normal/fast)
+        UDLDState = [string]  Unidirectional Link Detection setting (enabled/disabled)
+        UDLDMode = [string] UDLD Mode setting (normal/aggressive)
+        UDLDRecoveryAction = [string] UDLD Recovery Action setting (none/reset)
+        UDLDRecoveryInterval = [int] Seconds between UDLD attempting recovery action
+        DefaultVnicBehavior = [string] Default vNIC creation behavior setting (none/hw-inherit)
+        DefaultVhbaBehavior = [string] Default vHBA creation behavior setting (none/hw-inherit)
+        MacForging = [string] Mac Forging setting (allow/deny)
 #>
 
-
-$config.host = @{
-    sshenable     = [bool]$true
-    sshwarn       = [int]1
-    esxntp        = @('0.pool.ntp.org', '1.pool.ntp.org', '2.pool.ntp.org', '3.pool.ntp.org')
-    esxdns        = @('172.17.48.11', '172.17.48.12')
-    searchdomains = @('rubrik.demo')
-    esxsyslog     = @('tcp://172.16.20.243:514')
-    esxsyslogfirewallexception  = [bool]$true
-    sshtimeout    = [int]800
-    sshinteractivetimeout = [int]800
-}
-
-<########################################################################################
-        VM Settings
-        snapretention = [int] Allowed number of days for a VM snapshot to exist
-        allowconnectedcdrom = [bool] $true or $false
-        allowcpulimit = [bool] $true or $false
-        allowmemorylimit = [bool] $true or $false
-        bootdelay = [int] Time in milliseconds
-#>
-
-$config.vm = @{
-    snapretention       = [int]9999
-    allowconnectedcdrom = [bool]$false
-    allowcpulimit       = [bool]$false
-    allowmemorylimit    = [bool]$false
-    syncTimeWithHost    = [bool]$false
-    bootDelay           = [int]0
-}
-
-<########################################################################################
-        NFS Settings
-        Plug in your vendor's recommended NFS configuration values. Example: Tegile's Zebi array.
-#>
-
-$config.nfsadvconfig = @{
-    'NFS.MaxQueueDepth'    = [int]32
-    'NFS.DeleteRPCTimeout' = [int]30
-    'NFS.HeartbeatFrequency' = [int]20
-    'NFS.MaxVolumes'       = [int]256
-    'Net.TcpipHeapSize'    = [int]32
-    'Net.TcpipHeapMax'     = [int]1536
-}
-
-<########################################################################################
-        VDS (vSphere Distributed Switch) Settings
-        linkproto = [string] LLDP or CDP 
-        linkoperation = [string] Listen, Advertise, Both, Disabled
-        mtu = [int] Maximum Transmission Unit. Max is 9000.
-#>
-
-$config.vds = @{
-        linkproto = [string]'LLDP'
-        linkoperation = [string]'Both'
-        mtu = [int]1500
+$config.network = @{
+    CDPState = [string]'enabled'
+    MACRegisterMode = [string]'only-native-vlan'
+    UplinkFailureAction = [string]'link-down'
+    PriorityFlowControl = [string]'auto'
+    SendFlowControl = [string]'on'
+    ReceiveFlowControl = [string]'on'
+    LACPSuspend = [string]'true'
+    LACPRate = [string]'normal'
+    UDLDState = [string]'enabled'
+    UDLDMode = [string]'aggressive'
+    UDLDRecoveryAction = [string]'reset'
+    UDLDRecoveryInterval = [int]15
+    DefaultVnicBehavior = [string]'none'
+    DefaultVhbaBehavior = [string]'none'
+    MacForging = [string]'allow'
 }
