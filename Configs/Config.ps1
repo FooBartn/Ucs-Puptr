@@ -1,8 +1,9 @@
 $config = @{}
 
 <########################################################################################
-        UCS Domains to connect to. Format: Hostname = 'IPAddress'
-        Note: Hostname is Case-Sensitive
+        Connection Details
+        Username = [string] Username for connecting to UCS domains
+        Domain = [string[]] List of UCS domains to connect to (Hostname or IP)
 #>
 
 $config.connection = @{
@@ -15,7 +16,7 @@ $config.connection = @{
 <########################################################################################
         UCSM Settings
         PoolUsageThreshold = [string] Threshold for percentage of UID pool used
-        FaultSeverity = [array] Fault severity levels to check for (critical/major/warning/info)
+        FaultSeverity = [string[]] Fault severity levels to check for (critical/major/warning/info)
         FaultRetentionFrequency = [string] Fault retention frequency (forever, days, hours, minutes, seconds)
         FaultRetentionValue = [int] Duration pertaining to retention frequency (ie, '7' days)
         MaintenancePolicy = [string] Maintenance Policy disruption setting (user-ack/immediate/timer-automatic)
@@ -55,7 +56,7 @@ $config.fabric = @{
         SELRemoteStore = [string] Hostname or IP for remote storage location
         SELRemotePath = [string] Storage path on remote location
         SELClearOnBackup = [string] Clear SEL logs when they are backed up (yes/no)
-        SELAction = [string] When to offload SEL logs. Use braces and choose one or more options separated by commas {log-full, on-assoc-change, on-clear, timer}
+        SELAction = [string[]] When to offload SEL logs. Use braces and choose one or more options separated by commas {log-full, on-assoc-change, on-clear, timer}
         SELInterval = [string] Interval if timer is set as a SelAction.  {1 hour/2 hours/4 hours/8 hours/24 hours/1 week/1 month}
 #>
 
