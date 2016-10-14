@@ -19,9 +19,10 @@ Process {
             $config | Should Not BeNullOrEmpty
         }
 
-        It 'Contains proper secure credentials for UCS connectivty' {
-            $PuptrUser = $config.username
+        It 'Contains proper settings for .connection' {
+            $PuptrUser = $config.connection.Username
             $PuptrUser | Should Not BeNullOrEmpty
+            $config.connection.Domain.Count | Should BeGreaterThan 0
             
             # Test if secure file exists. If not, create it.
             try {
@@ -33,18 +34,13 @@ Process {
                 $Credential.Password | ConvertFrom-SecureString | Out-File -FilePath "..\$($Credential.UserName).txt"
             }
 
-            # Test importing credentials
-            $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString | Should Not BeNullOrEmpty
-            $Credential = [pscredential]::new($PuptrUser,$SecurePassword) | Should Not BeNullOrEmpty
-            
-        }
-
-        It 'Contains proper settings for .domain' {
-            $config.domain.Keys.Count | Should BeGreaterThan 0
+            # Importing credentials
+            $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
+            $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
             
             # Support multiple default ucs connections if necessary
             try {
-                if ($config.domain.Keys.Count -gt 1) {
+                if ($config.connection.Domain.Count -gt 1) {
                     (Get-UcsPowerToolConfiguration).SupportMultipleDefaultUcs | Should Be $true
                 }
             } catch {
@@ -54,11 +50,12 @@ Process {
             }
 
             # Test connectivity
-            $config.domain.Keys | ForEach-Object { 
+            foreach ($Domain in $config.connection.Domain) {
                 try {
-                    Get-UcsStatus -Ucs $_ | Should Not BeNullOrEmpty
+                    Connect-Ucs -Name $Domain -Credential $Credential -ErrorAction Stop | Should Not BeNullOrEmpty
                 } catch {
-                    Connect-Ucs -Name $_ -Credential $Credential | Should Not BeNullOrEmpty
+                    throw $_
+                } finally {
                     Disconnect-Ucs
                 }
             }
