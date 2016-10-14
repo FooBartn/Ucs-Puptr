@@ -1,18 +1,15 @@
 $config = @{}
 
 <########################################################################################
-        Username for connecting to UCS Domains
-#>
-
-$config.username = 'PlayerOne'
-
-<########################################################################################
         UCS Domains to connect to. Format: Hostname = 'IPAddress'
         Note: Hostname is Case-Sensitive
 #>
 
-$config.domain = @{
-    MyUcsDomain = '10.10.1.1'
+$config.connection = @{
+    Username = 'PlayerOne'
+    Domain = @(
+        '10.10.1.100'
+    )
 }
 
 <########################################################################################
