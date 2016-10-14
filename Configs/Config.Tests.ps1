@@ -19,6 +19,51 @@ Process {
             $config | Should Not BeNullOrEmpty
         }
 
+        It 'Contains proper secure credentials for UCS connectivty' {
+            $PuptrUser = $config.username
+            $PuptrUser | Should Not BeNullOrEmpty
+            
+            # Test if secure file exists. If not, create it.
+            try {
+                Test-Path -Path "..\$PuptrUser.txt" -ErrorAction Stop | Should Be $true
+            } catch {
+                Write-Warning -Message $_
+                Write-Warning -Message "Creating secure password file for $PuptrUser"
+                $Credential = Get-Credential -UserName $PuptrUser -Message 'Credentials for connecting to UCS Domains with Ucs-Puptr'
+                $Credential.Password | ConvertFrom-SecureString | Out-File -FilePath "..\$($Credential.UserName).txt"
+            }
+
+            # Test importing credentials
+            $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString | Should Not BeNullOrEmpty
+            $Credential = [pscredential]::new($PuptrUser,$SecurePassword) | Should Not BeNullOrEmpty
+            
+        }
+
+        It 'Contains proper settings for .domain' {
+            $config.domain.Keys.Count | Should BeGreaterThan 0
+            
+            # Support multiple default ucs connections if necessary
+            try {
+                if ($config.domain.Keys.Count -gt 1) {
+                    (Get-UcsPowerToolConfiguration).SupportMultipleDefaultUcs | Should Be $true
+                }
+            } catch {
+                Write-Warning -Message $_
+                Write-Warning -Message "Enabling support for multiple default Ucs connections"
+                Set-UcsPowerToolConfiguration -SupportMultipleDefaultUcs $true -Force
+            }
+
+            # Test connectivity
+            $config.domain.Keys | ForEach-Object { 
+                try {
+                    Get-UcsStatus -Ucs $_ | Should Not BeNullOrEmpty
+                } catch {
+                    Connect-Ucs -Name $_ -Credential $Credential | Should Not BeNullOrEmpty
+                    Disconnect-Ucs
+                }
+            }
+        }
+
         It 'Contains proper settings for .ucsm' {
             $UcsmKeys = 'PoolUsageThreshold|FaultSeverity|FaultRetentionFrequency|FaultRetentionValue|'
             $UcsmKeys += 'MaintenancePolicy|PoolAssignmentOrder|InfoPolicyState|FirmwareVersion'

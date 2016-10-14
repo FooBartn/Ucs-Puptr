@@ -1,6 +1,21 @@
 $config = @{}
 
 <########################################################################################
+        Username for connecting to UCS Domains
+#>
+
+$config.username = 'PlayerOne'
+
+<########################################################################################
+        UCS Domains to connect to. Format: Hostname = 'IPAddress'
+        Note: Hostname is Case-Sensitive
+#>
+
+$config.domain = @{
+    MyUcsDomain = '10.10.1.1'
+}
+
+<########################################################################################
         UCSM Settings
         PoolUsageThreshold = [string] Threshold for percentage of UID pool used
         FaultSeverity = [array] Fault severity levels to check for (critical/major/warning/info)
