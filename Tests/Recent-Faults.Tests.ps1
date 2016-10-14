@@ -11,11 +11,21 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Fault(s)' -Tag @("ucsm") -Fixture {
+    Describe -Name 'UCSM Configuration: Fault(s)' -Tag @('ucsm') -Fixture {
         # Variables
         . $Config
+        [string]$PuptrUser = $config.connection.Username
+        [string[]]$UcsDomains = $config.connection.Domain
         [array]$SeverityFilter = $config.ucsm.FaultSeverity
 
+        # Importing credentials
+        $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
+        $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
+
+        # Connect to UCS 
+        Connect-Ucs -Name $UcsDomains -Credential $Credential
+
+        # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
             It -Name "$($UcsDomain.Name) has no faults of severity: $SeverityFilter" -Test {
                 # Gather faults according to severity filter
@@ -32,5 +42,8 @@ Process {
                 }
             }
         }
+
+        # Disconnect from UCS
+        Disconnect-Ucs
     }
 }
