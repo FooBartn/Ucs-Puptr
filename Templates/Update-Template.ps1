@@ -1,4 +1,4 @@
-﻿#requires -Modules Pester, VMware.VimAutomation.Core
+﻿#requires -Modules Pester, Cisco.UcsManager
 
 [CmdletBinding()]
 Param(
@@ -11,25 +11,42 @@ Param(
 
 Process {
     # Tests
-    ###Describe -Name '!!! Configuration: !!!' -Fixture {
-    # Variables
-    . $Config
-    ###[type]$var1 = $config.!!!
-    ###[type]$var2 = $config.!!!
+    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+        # Variables
+        . $Config
+        [string]$PuptrUser = $config.connection.Username
+        [string[]]$UcsDomains = $config.connection.Domain
+        #[vartype]$var = 
 
-    foreach ($UcsDomain in (Get-UcsStatus)) {
-        ###It -name '!!!' -test {
-            ###$value = !!!TestMe
-            try {
-                ###$value | Should Be !!!SomethingElse
-            } catch {
-                if ($Remediate) {
-                    Write-Warning -Message $_
-                    ###Write-Warning -Message "Remediating !!!" 
-                } else {
-                    throw $_
+        # Importing credentials
+        $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
+        $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
+
+        # Connect to UCS 
+        Connect-Ucs -Name $UcsDomains -Credential $Credential
+
+        # Run test case
+        foreach ($UcsDomain in (Get-UcsStatus)) {
+            It -Name "$($UcsDomain.Name) has..." -Test {
+                #
+                # Run commands to gather data
+                #
+
+                # Assert
+                try {
+                 #   Data gathered | Should ...
+                } catch {
+                    if ($Remediate) {
+                        Write-Warning -Message $_
+                        Write-Warning -Message "Enter Remediation Message Here" 
+                    } else {
+                        throw $_
+                    }
                 }
             }
         }
+
+        # Disconnect from UCS
+        Disconnect-Ucs
     }
 }
