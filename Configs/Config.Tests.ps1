@@ -78,9 +78,8 @@ Process {
             $config.ucsm.PoolUsageThreshold | Should BeOfType Int
             $config.ucsm.FaultSeverity | Should Match 'critical|major|warning|info'
             $config.ucsm.FaultSeverity | Should BeOfType String
-            $config.ucsm.FaultRetentionFrequency | Should Match 'forever|days|hours|minutes|seconds'
-            $config.ucsm.FaultRetentionFrequency | Should BeOfType String
-            $config.ucsm.FaultRetentionValue | Should BeOfType Int
+            $config.ucsm.FaultRetentionInterval | Should Match 'forever|[0-9][0-9]:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]'
+            $config.ucsm.FaultRetentionInterval | Should BeOfType String
             $config.ucsm.MaintenancePolicy | Should Match 'user-ack|immediate|timer-automatic'
             $config.ucsm.MaintenancePolicy | Should BeOfType String
             $config.ucsm.PoolAssignmentOrder | Should Match 'default|sequential'
