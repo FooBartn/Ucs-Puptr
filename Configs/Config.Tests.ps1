@@ -20,10 +20,16 @@ Process {
         }
 
         It 'Contains proper settings for .connection' {
-            $PuptrUser = $config.connection.Username
-            $PuptrUser | Should Not BeNullOrEmpty
+            $config.connection.Keys | Should Match 'Username|Domain'
+            $config.connection.Keys.Count | Should Be 2
+            $config.connection.Username | Should Not BeNullOrEmpty
+            $config.connection.Username | Should BeOfType String
             $config.connection.Domain.Count | Should BeGreaterThan 0
+            $config.connection.Domain | Should BeOfType String
             
+            # Set var for .connection.Username
+            $PuptrUser = $config.connection.Username
+
             # Test if secure file exists. If not, create it.
             try {
                 Test-Path -Path "..\$PuptrUser.txt" -ErrorAction Stop | Should Be $true
