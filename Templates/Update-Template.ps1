@@ -17,23 +17,16 @@ Process {
     ###[type]$var1 = $config.!!!
     ###[type]$var2 = $config.!!!
 
-    foreach ($server in (Get-VMHost -Name $config.scope.host)) 
-    {
+    foreach ($UcsDomain in (Get-UcsStatus)) {
         ###It -name '!!!' -test {
             ###$value = !!!TestMe
-            try 
-            {
+            try {
                 ###$value | Should Be !!!SomethingElse
-            }
-            catch 
-            {
-                if ($Remediate) 
-                {
+            } catch {
+                if ($Remediate) {
                     Write-Warning -Message $_
                     ###Write-Warning -Message "Remediating !!!" 
-                }
-                else 
-                {
+                } else {
                     throw $_
                 }
             }
