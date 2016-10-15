@@ -68,10 +68,10 @@ Process {
         }
 
         It 'Contains proper settings for .ucsm' {
-            $UcsmKeys = 'PoolUsageThreshold|FaultSeverity|FaultRetentionFrequency|FaultRetentionValue|'
+            $UcsmKeys = 'PoolUsageThreshold|FaultSeverity|FaultRetentionInterval|'
             $UcsmKeys += 'MaintenancePolicy|PoolAssignmentOrder|InfoPolicyState|FirmwareVersion'
             $config.ucsm.Keys | Should Match $UcsmKeys
-            $config.ucsm.Keys.Count | Should Be 8
+            $config.ucsm.Keys.Count | Should Be 7
             $config.ucsm.Values | ForEach-Object {$_ | Should Not BeNullOrEmpty}
             $config.ucsm.PoolUsageThreshold | Should Not BeGreaterThan 100
             $config.ucsm.PoolUsageThreshold | Should Not BeLessThan 1
@@ -80,8 +80,8 @@ Process {
             $config.ucsm.FaultSeverity | Should BeOfType String
             $config.ucsm.FaultRetentionInterval | Should Match 'forever|[0-9][0-9]:[0-9][0-9]:[0-9][0-9]:[0-9][0-9]'
             $config.ucsm.FaultRetentionInterval | Should BeOfType String
-            $config.ucsm.MaintenancePolicy | Should Match 'user-ack|immediate|timer-automatic'
-            $config.ucsm.MaintenancePolicy | Should BeOfType String
+            $config.ucsm.MaintenancePolicy.Values | Should Match 'user-ack|immediate|timer-automatic'
+            $config.ucsm.MaintenancePolicy | Should BeOfType Hashtable
             $config.ucsm.PoolAssignmentOrder | Should Match 'default|sequential'
             $config.ucsm.PoolAssignmentOrder | Should BeOfType String
             $config.ucsm.InfoPolicyState | Should Match 'enabled|disabled'
