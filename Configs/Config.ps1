@@ -50,7 +50,7 @@ $config.fabric = @{
 
 <########################################################################################
         Chassis/Server Settings
-        MinimumChassisUplinks = [string] Minimum number of uplinks required to discover Chassis/FEX(1/2/4/8/platform-max)
+        MinimumChassisUplinks = [string] Minimum number of uplinks required to discover Chassis/FEX(1-link/2-link/4-link/8-link/platform-max)
         LinkAggregation = [string] Link aggregation (none/port-channel)
         PowerRedundancy = [string] Power redundancy setting (non-redundant/n+1/grid)
         SELProtocol = [string] Protocol for sending SEL logs to remote location (ftp/tftp/scp/sftp)
@@ -62,7 +62,7 @@ $config.fabric = @{
 #>
 
 $config.server = @{
-    MinimumChassisUplinks = [string]'4'
+    MinimumChassisUplinks = [string]'4-link'
     LinkAggregation = [string]'port-channel'
     PowerRedundancy = [string]'grid'
     SELProtocol = [string]'sftp'

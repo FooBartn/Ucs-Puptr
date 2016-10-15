@@ -106,7 +106,7 @@ Process {
             $ServerKeys += 'SELAction|SELInterval'
             $config.server.Keys | Should Match $ServerKeys
             $config.server.Keys.Count | Should Be 9
-            $config.server.MinimumChassisUplinks | Should Match '1|2|4|8|platform-max'
+            $config.server.MinimumChassisUplinks | Should Match '1-link|2-link|4-link|8-link|platform-max'
             $config.server.MinimumChassisUplinks | Should BeOfType String
             $config.server.LinkAggregation | Should Match 'none|port-channel'
             $config.server.LinkAggregation | Should BeOfType String
