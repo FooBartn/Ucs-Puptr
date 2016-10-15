@@ -28,7 +28,7 @@ Process {
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            It -Name "$($UcsDomain.Name) has..." -Test {
+            It -Name "$($UcsDomain.Name) has a retention policy of: $FaultRetentionInterval" -Test {
                 # Run commands to gather data
                 $FaultPolicy = (Get-UcsFaultPolicy).RetentionInterval
 
