@@ -2,6 +2,8 @@ Cisco UCS Puptr (pronounced "puppeteer")
 ======================
 #### -- Pester for UCS PowerTool Testing and Remediation
 
+* Current tests do function, but this is very much a work in progress. Still revamping the README
+
 Ucs-Puptr is a community project forked from and built on the basis of Vester, which aims to provide an
 extremely light-weight approach to vSphere configuration management using Pester and PowerCLI. Ucs-Puptr
 will serve the same purpose, but with Pester and Cisco UCS PowerTool.
