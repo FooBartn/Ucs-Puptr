@@ -48,13 +48,14 @@ Default: `Ucs-Puptr\Configs\Config.ps1`
 
 # Usage Instructions
 
+Run the default (Example 1) or config tests first. There are integration tests in there that will help with initial setup: create a credential file, turn on support for multiple default
+UCS connections and test connectivity to each domain defined in the config.
+
+After that you can run Invoke-Pester inside the Tests directory.
+
 The end-state configuration for each Cisco UCS component is stored inside of the `Config.ps1` file. Make sure to read through the configuration items and set them with your specific environmental variables for DRS, NTP, SSH, etc.
 
 If you have multiple environments that have unique settings, create a copy of the `Config.ps1` file for each environment and call it whatever you wish (such as `Config-Prod.ps1` for Production and `Config-Dev.ps1` for your Dev).
-
-Once that's complete, you can start running Pester tests by opening your PowerShell console, using `Connect-VIServer` to authenticate to your vCenter Server, and finally using the parameters and examples below.
-
-[![Watch the Tutorial on YouTube](http://i.imgur.com/qXrGlar.png)](https://www.youtube.com/watch?v=CyVfzZ4jA8Q "Watch the Tutorial on YouTube")
 
 ### Example 1 - Validation using Defaults
 `Invoke-Pester .\Ucs-Puptr`
@@ -108,16 +109,16 @@ Everyone is welcome to contribute to this project. The goal is to add fine-grain
 
 Every test that is added to Ucs-Puptr needs three things:
 
-1. An update to the example [`Config.ps1`](https://github.com/WahlNetwork/Ucs-Puptr/blob/master/Configs/Config.ps1) file with your required configuration value(s), comments, and accepted input type.
-2. An update to the [`Config.Tests.ps1`](https://github.com/WahlNetwork/Ucs-Puptr/blob/master/Configs/Config.Tests.ps1) file to validate that the `Config.ps1` file contains valid entries.
+1. An update to the example [`Config.ps1`](https://github.com/FooBartn/Ucs-Puptr/blob/master/Configs/Config.ps1) file with your required configuration value(s), comments, and accepted input type.
+2. An update to the [`Config.Tests.ps1`](https://github.com/FooBartn/Ucs-Puptr/blob/master/Configs/Config.Tests.ps1) file to validate that the `Config.ps1` file contains valid entries.
 3. A test file using a properly formatted `Verb-Noun` format (use `Get-Verb` for more details) placed into the Tests folder.
 
 ### Your First Contribution
 
 If you're looking for your first bit of code to add, try this list:
 
-1. Identify a configuration value in your vSphere environment that isn't being inspected by Ucs-Puptr.
-2. Use the [Template](https://github.com/WahlNetwork/Ucs-Puptr/blob/master/Templates/Update-Template.ps1) to create a test that inspects this value and try it out locally.
+1. Identify a configuration value in your Cisco UCS environment that isn't being inspected by Ucs-Puptr.
+2. Use the [Template](https://github.com/FooBartn/Ucs-Puptr/blob/master/Templates/Update-Template.ps1) to create a test that inspects this value and try it out locally.
 3. At this point you can submit a pull request (PR) for a non-remediating test. If someone else wants the remediation code added, they will grab your code and write that portion.
 4. Optionally, write the remediation portion yourself to make a fully remediating test.
 
