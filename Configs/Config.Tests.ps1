@@ -1,4 +1,4 @@
-#requires -Version 3 -Modules Pester
+#requires -Version 3 -Modules Pester, Cisco.UcsManager
 
 [CmdletBinding()]
 Param(
@@ -109,21 +109,25 @@ Process {
     } #Describe
 
     Describe -Name 'Configuration Integration Testing' -Tag @('integration') -Fixture {
+        # Project Environment Variables      
+        $ProjectDir = (Get-Item $PSScriptRoot).parent.FullName
+        $CredentialDir = "$ProjectDir\Credentials"
+
         # Ensure $config is loaded into the session
         . $Config
-        
+
         # Set var for .connection.Username
         $PuptrUser = $config.connection.Username
 
         It "Tests that secure credential file exists for $PuptrUser" {
             # Test if secure file exists. If not, create it.
             try {
-                Test-Path -Path "..\$PuptrUser.txt" -ErrorAction Stop | Should Be $true
+                Test-Path -Path "$CredentialDir\$PuptrUser.txt" -ErrorAction Stop | Should Be $true
             } catch {
                 Write-Warning -Message $_
                 Write-Warning -Message "Creating secure password file for $PuptrUser"
                 $Credential = Get-Credential -UserName $PuptrUser -Message 'Credentials for connecting to UCS Domains with Ucs-Puptr'
-                $Credential.Password | ConvertFrom-SecureString | Out-File -FilePath "..\$($Credential.UserName).txt"
+                $Credential.Password | ConvertFrom-SecureString | Out-File -FilePath "$CredentialDir\$($Credential.UserName).txt"
             }
         }
 
@@ -142,7 +146,7 @@ Process {
 
         It "Tests that connections to all domains are successful" {
             # Importing credentials
-            $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
+            $SecurePassword = Get-Content -Path "$CredentialDir\$PuptrUser.txt" | ConvertTo-SecureString
             $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
 
             # Test connectivity
