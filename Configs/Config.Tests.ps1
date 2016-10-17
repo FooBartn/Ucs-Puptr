@@ -7,7 +7,7 @@ Param(
 )
 
 Process {
-    Describe 'Config file validation' {
+    Describe -Name 'Configuration File Validation' -Fixture {
         It 'Is reading a valid config file' {
             $Config | Should Exist
         }
@@ -26,45 +26,6 @@ Process {
             $config.connection.Username | Should BeOfType String
             $config.connection.Domain.Count | Should BeGreaterThan 0
             $config.connection.Domain | Should BeOfType String
-            
-            # Set var for .connection.Username
-            $PuptrUser = $config.connection.Username
-
-            # Test if secure file exists. If not, create it.
-            try {
-                Test-Path -Path "..\$PuptrUser.txt" -ErrorAction Stop | Should Be $true
-            } catch {
-                Write-Warning -Message $_
-                Write-Warning -Message "Creating secure password file for $PuptrUser"
-                $Credential = Get-Credential -UserName $PuptrUser -Message 'Credentials for connecting to UCS Domains with Ucs-Puptr'
-                $Credential.Password | ConvertFrom-SecureString | Out-File -FilePath "..\$($Credential.UserName).txt"
-            }
-
-            # Importing credentials
-            $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
-            $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
-            
-            # Support multiple default ucs connections if necessary
-            try {
-                if ($config.connection.Domain.Count -gt 1) {
-                    (Get-UcsPowerToolConfiguration).SupportMultipleDefaultUcs | Should Be $true
-                }
-            } catch {
-                Write-Warning -Message $_
-                Write-Warning -Message "Enabling support for multiple default Ucs connections"
-                Set-UcsPowerToolConfiguration -SupportMultipleDefaultUcs $true -Force
-            }
-
-            # Test connectivity
-            foreach ($Domain in $config.connection.Domain) {
-                try {
-                    Connect-Ucs -Name $Domain -Credential $Credential -ErrorAction Stop | Should Not BeNullOrEmpty
-                } catch {
-                    throw $_
-                } finally {
-                    Disconnect-Ucs
-                }
-            }
         }
 
         It 'Contains proper settings for .ucsm' {
@@ -144,6 +105,56 @@ Process {
             $config.network.LACPSuspend | Should BeOfType String
             $config.network.LACPRate | Should Match 'normal|fast'
             
+        }
+    } #Describe
+
+    Describe -Name 'Configuration Integration Testing' -Tag @('integration') -Fixture {
+        # Ensure $config is loaded into the session
+        . $Config
+        
+        # Set var for .connection.Username
+        $PuptrUser = $config.connection.Username
+
+        It "Tests that secure credential file exists for $PuptrUser" {
+            # Test if secure file exists. If not, create it.
+            try {
+                Test-Path -Path "..\$PuptrUser.txt" -ErrorAction Stop | Should Be $true
+            } catch {
+                Write-Warning -Message $_
+                Write-Warning -Message "Creating secure password file for $PuptrUser"
+                $Credential = Get-Credential -UserName $PuptrUser -Message 'Credentials for connecting to UCS Domains with Ucs-Puptr'
+                $Credential.Password | ConvertFrom-SecureString | Out-File -FilePath "..\$($Credential.UserName).txt"
+            }
+        }
+
+        It "Tests that default ucs support is enabled if necessary" {
+            # Support multiple default ucs connections if necessary
+            try {
+                if ($config.connection.Domain.Count -gt 1) {
+                    (Get-UcsPowerToolConfiguration).SupportMultipleDefaultUcs | Should Be $true
+                }
+            } catch {
+                Write-Warning -Message $_
+                Write-Warning -Message "Enabling support for multiple default Ucs connections"
+                Set-UcsPowerToolConfiguration -SupportMultipleDefaultUcs $true -Force
+            }
+        }
+
+        It "Tests that connections to all domains are successful" {
+            # Importing credentials
+            $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
+            $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
+
+            # Test connectivity
+            foreach ($Domain in $config.connection.Domain) {
+                try {
+                    Connect-Ucs -Name $Domain -Credential $Credential -ErrorAction Stop | Should Not BeNullOrEmpty
+                } catch {
+                    throw $_
+                } finally {
+                    Disconnect-Ucs
+                }
+            }
         }
     } #Describe
 } #Process
