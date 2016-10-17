@@ -12,15 +12,18 @@ Param(
 Process {
     # Tests
     Describe -Name 'UCSM Configuration: Fault Retention' -Tag @('ucsm') -Fixture {
-        # Variables
+        # Project Environment Variables      
+        $ProjectDir = (Get-Item $PSScriptRoot).parent.FullName
+        $CredentialDir = "$ProjectDir\Credentials"
+
+        # Config Variables
         . $Config
         [string]$PuptrUser = $config.connection.Username
         [string[]]$UcsDomains = $config.connection.Domain
         [string]$FaultRetentionInterval = $config.ucsm.FaultRetentionInterval
-        #[vartype]$var = 
 
         # Importing credentials
-        $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
+        $SecurePassword = Get-Content -Path "$CredentialDir\$PuptrUser.txt" | ConvertTo-SecureString
         $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
 
         # Connect to UCS 

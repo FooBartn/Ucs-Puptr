@@ -12,7 +12,11 @@ Param(
 Process {
     # Tests
     Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
-        # Variables
+        # Project Environment Variables      
+        $ProjectDir = (Get-Item $PSScriptRoot).parent.FullName
+        $CredentialDir = "$ProjectDir\Credentials"
+        
+        # Config Variables
         . $Config
         [string]$PuptrUser = $config.connection.Username
         [string[]]$UcsDomains = $config.connection.Domain
