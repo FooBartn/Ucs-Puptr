@@ -119,6 +119,17 @@ Process {
         # Set var for .connection.Username
         $PuptrUser = $config.connection.Username
 
+        It "Tests that $CredentialDir exists" {
+            # Test if credential directory exists. If not, create it.
+            try {
+                Test-Path -Path "$CredentialDir" -ErrorAction Stop | Should Be $true
+            } catch {
+                Write-Warning -Message $_
+                Write-Warning -Message "Creating secure credential directory at $CredentialDir"
+                New-Item -Path $CredentialDir -ItemType Directory -Force
+            }
+        }
+
         It "Tests that secure credential file exists for $PuptrUser" {
             # Test if secure file exists. If not, create it.
             try {
