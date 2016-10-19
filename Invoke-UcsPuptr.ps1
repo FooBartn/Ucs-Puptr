@@ -1,4 +1,4 @@
-#requires -version 4
+#requires -version 4 -Modules Cisco.UcsManager
 
 <#
 
