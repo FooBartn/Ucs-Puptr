@@ -44,7 +44,7 @@ Process {
                     if ($Remediate) {
                         Write-Warning -Message $_
                         Write-Warning -Message "Changing minimum uplink requirement to $MinimumChassisUplinks"
-                        Set-UcsChassisDiscoveryPolicy -Action $MinimumChassisUplinks -Force
+                        $ChassisDiscoveryPolicy | Set-UcsChassisDiscoveryPolicy -Action $MinimumChassisUplinks -Force
                     } else {
                         throw $_
                     }
@@ -60,7 +60,7 @@ Process {
                     if ($Remediate) {
                         Write-Warning -Message $_
                         Write-Warning -Message "Changing link aggregation preference to $LinkAggregation"
-                        Set-UcsChassisDiscoveryPolicy -LinkAggregationPref $LinkAggregation -Force 
+                        $ChassisDiscoveryPolicy | Set-UcsChassisDiscoveryPolicy -LinkAggregationPref $LinkAggregation -Force 
                     } else {
                         throw $_
                     }
