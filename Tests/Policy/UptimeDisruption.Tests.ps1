@@ -35,15 +35,15 @@ Process {
                 $ExpectedValue = $MaintenancePolicies.$PolicyName
                 It -Name "$($UcsDomain.Name) has a policy named $PolicyName set to $ExpectedValue" -Test {
                     # Run commands to gather data
-                        $CurrentPolicy = Get-UcsMaintenancePolicy -Name $PolicyName
+                        $MaintenancePolicy = Get-UcsMaintenancePolicy -Name $PolicyName
                     # Assert
                     try {
-                        $CurrentPolicy.UptimeDisr | Should Be $ExpectedValue
+                        $MaintenancePolicy.UptimeDisr | Should Be $ExpectedValue
                     } catch {
                         if ($Remediate) {
                             Write-Warning -Message $_
                             Write-Warning -Message "Setting maintenance policy `'$PolicyName`' to $ExpectedValue"
-                            $CurrentPolicy | Set-UcsMaintenancePolicy -UptimeDisr $ExpectedValue -Force
+                            $MaintenancePolicy | Set-UcsMaintenancePolicy -UptimeDisr $ExpectedValue -Force
                         } else {
                             throw $_
                         }
