@@ -11,9 +11,9 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('ucsm') -Fixture {
+    Describe -Name 'UCSM Configuration: Maintenance Policy' -Tag @('ucsm') -Fixture {
         # Project Environment Variables      
-        $ProjectDir = (Get-Item $PSScriptRoot).parent.FullName
+        $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
         $CredentialDir = "$ProjectDir\Credentials"
         
         # Config Variables

@@ -13,7 +13,7 @@ Process {
     # Tests
     Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
         # Project Environment Variables      
-        $ProjectDir = (Get-Item $PSScriptRoot).parent.FullName
+        $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
         $CredentialDir = "$ProjectDir\Credentials"
         
         # Config Variables
