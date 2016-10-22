@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Default UUID Schema' -Tag @('ucsm') -Fixture {
+    Describe -Name 'UCSM Configuration: Default Pool Schemas' -Tag @('ucsm') -Fixture {
         # Project Environment Variables      
         $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
         $CredentialDir = "$ProjectDir\Credentials"
@@ -20,7 +20,9 @@ Process {
         . $Config
         [string]$PuptrUser = $config.connection.Username
         [string[]]$UcsDomains = $config.connection.Domain
+        [string]$DefaultMacSchema = '00:25:B5:00:00:00'
         [string]$DefaultUuidSchema = '0000-000000000001'
+        [string]$DefaultWwnSchema = '20:00:00:25:B5:00:00:00'
 
         # Importing credentials
         $SecurePassword = Get-Content -Path "..\$PuptrUser.txt" | ConvertTo-SecureString
@@ -31,6 +33,21 @@ Process {
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
+            It -Name "$($UcsDomain.Name) does not use the default MAC schema" -Test {
+                #
+                # Run commands to gather data
+                $MacBlocks = @(Get-UcsMacMemberBlock)
+
+                # Assert
+                try {
+                    foreach ($MacBlock in $MacBlocks) {
+                        $MacBlock.From | Should Not Be $DefaultMacSchema
+                    }
+                } catch {
+                    throw $_
+                }
+            }
+            
             It -Name "$($UcsDomain.Name) does not use default UUID schema" -Test {
                 #
                 # Run commands to gather data
@@ -40,6 +57,21 @@ Process {
                 try {
                     foreach ($UuidBlock in $UuidBlocks) {
                         $UuidBlock.From | Should Not Be $DefaultUuidSchema
+                    }
+                } catch {
+                    throw $_
+                }
+            }
+
+            It -Name "$($UcsDomain.Name) does not use default WWN schema" -Test {
+                #
+                # Run commands to gather data
+                $WwnBlocks = @(Get-UcsWwnMemberBlock)
+
+                # Assert
+                try {
+                    foreach ($WwnBlock in $WwnBlocks) {
+                        $WwnBlock.From | Should Not Be $DefaultWwnSchema
                     }
                 } catch {
                     throw $_
