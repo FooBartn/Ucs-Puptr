@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+    Describe -Name 'UCSM Configuration: Pool Usage Threshold' -Tag @('ucsm') -Fixture {
         # Project Environment Variables      
         $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
         $CredentialDir = "$ProjectDir\Credentials"
