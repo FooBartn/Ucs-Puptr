@@ -33,7 +33,7 @@ Process {
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
             # Get Chassis Info
-            $ChassisDiscoveryPolicy = Get-UcsChassisDiscoveryPolicy
+            $ChassisDiscoveryPolicy = Get-UcsChassisDiscoveryPolicy -Ucs $UcsDomain.Name
 
             It -Name "$($UcsDomain.Name) has a minimum chassis uplink requirement of: $MinimumChassisUplinks" -Test {
 

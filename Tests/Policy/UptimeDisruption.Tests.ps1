@@ -35,7 +35,7 @@ Process {
                 $ExpectedValue = $MaintenancePolicies.$PolicyName
                 It -Name "$($UcsDomain.Name) has a policy named $PolicyName set to $ExpectedValue" -Test {
                     # Run commands to gather data
-                        $MaintenancePolicy = Get-UcsMaintenancePolicy -Name $PolicyName
+                        $MaintenancePolicy = Get-UcsMaintenancePolicy -Ucs $UcsDomain.Name -Name $PolicyName
                     # Assert
                     try {
                         $MaintenancePolicy.UptimeDisr | Should Be $ExpectedValue

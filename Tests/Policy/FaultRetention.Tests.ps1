@@ -33,7 +33,7 @@ Process {
         foreach ($UcsDomain in (Get-UcsStatus)) {
             It -Name "$($UcsDomain.Name) has a retention policy of: $FaultRetentionInterval" -Test {
                 # Run commands to gather data
-                $FaultPolicy = (Get-UcsFaultPolicy).RetentionInterval
+                $FaultPolicy = (Get-UcsFaultPolicy -Ucs $UcsDomain.Name).RetentionInterval
 
                 # Assert
                 try {
