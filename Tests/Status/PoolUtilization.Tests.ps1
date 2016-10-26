@@ -43,12 +43,8 @@ Process {
                     Where {$_.Purpose -eq 'port-wwn-assignment'-AND $_.Size -ne 0}
             }
 
-            foreach ($PoolType in $UIDPools) {
-                It -Name "$($UcsDomain.Name) is using less than $PoolThreshold percent of the MAC Pool" -Test {
-                    #
-                    # Run commands to gather data
-                    $MacPools = @(Get-UcsMacPool | Where {$_.Size -ne 0})
-
+            foreach ($PoolType in $UIDPools.Keys) {
+                It -Name "$($UcsDomain.Name) is using less than $PoolThreshold percent of the $PoolType" -Test {
                     # Assert
                     try {
                         foreach ($UIDPool in $UIDPools.$PoolType) {
