@@ -9,6 +9,8 @@ Param(
     [string]$Config
 )
 
+# NOTE: THERE IS AN ISSUE HERE. The Cisco UCS XML presents a port without an SFP present as being 'up'. So this test will not catch that.
+
 Process {
     # Tests
     Describe -Name 'Network Configuration: Ports Both Enabled and Down ' -Tag @('network','no-impact') -Fixture {
@@ -31,8 +33,10 @@ Process {
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            $EthPorts = Get-UcsUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' -OperState 'down'
-            $FcPorts = Get-UcsFcUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' -OperState 'down'
+            $EthPorts = Get-UcsUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' |
+                Where {$_.OperState -ne 'up'}
+            $FcPorts = Get-UcsFcUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' |
+                Where {$_.OperState -ne 'up'}
 
             It -Name "$($UcsDomain.Name) has no uplink ports both enabled and down" -Test {
                 # Assert
