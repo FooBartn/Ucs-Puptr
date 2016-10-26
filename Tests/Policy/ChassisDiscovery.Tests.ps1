@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Server Configuration: Chassis Discovery Policy' -Tag @('server') -Fixture {
+    Describe -Name 'Server Configuration: Chassis Discovery Policy' -Tag @('server','no-impact') -Fixture {
         # Project Environment Variables      
         $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
         $CredentialDir = "$ProjectDir\Credentials"

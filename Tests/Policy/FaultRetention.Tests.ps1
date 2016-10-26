@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Fault Retention' -Tag @('ucsm') -Fixture {
+    Describe -Name 'UCSM Configuration: Fault Retention' -Tag @('ucsm','no-impact') -Fixture {
         # Project Environment Variables      
         $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
         $CredentialDir = "$ProjectDir\Credentials"
