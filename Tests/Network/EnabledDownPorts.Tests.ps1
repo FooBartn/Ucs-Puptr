@@ -34,9 +34,9 @@ Process {
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
             $EthPorts = Get-UcsUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' |
-                Where {$_.OperState -ne 'up'}
+                where {$_.OperState -ne 'up'}
             $FcPorts = Get-UcsFcUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' |
-                Where {$_.OperState -ne 'up'}
+                where {$_.OperState -ne 'up'}
 
             It -Name "$($UcsDomain.Name) has no uplink ports both enabled and down" -Test {
                 # Assert
