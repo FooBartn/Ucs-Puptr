@@ -8,11 +8,11 @@ Properties {
         $ProjectRoot = $PSScriptRoot
     }
     
-    $PesterTestDir = $ProjectRoot | Join-Path 'Tests'
+    $PesterTestDir = $ProjectRoot | Join-Path -ChildPath 'Tests'
     $Timestamp = Get-date -uformat "%Y%m%d-%H%M%S"
     $PSVersion = $PSVersionTable.PSVersion.Major
     $TestFile = "TestResults_PS$PSVersion`_$TimeStamp.xml"
-    $TestPath = $ProjectRoot | Join-Path $TestFile
+    $TestPath = $ProjectRoot | Join-Path -ChildPath $TestFile
     $AppveyorURL = "https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)"
     $lines = '----------------------------------------------------------------------'
 

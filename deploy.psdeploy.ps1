@@ -37,10 +37,11 @@ if(
 }
 else
 {
-    Write-Output "Skipping deployment: To deploy, ensure that..."
-    Write-Output " * You are in a known build system (Current: $ENV:BHBuildSystem)"
-    Write-Output " * You are committing to the master branch (Current: $ENV:BHBranchName)"
-    Write-Output " * Your commit message includes !deploy (Current: $ENV:BHCommitMessage)"
+    "Skipping deployment: To deploy, ensure that...`n" +
+    "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" +
+    "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" +
+    "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)" |
+        Write-Host
 }
 
 # Publish to AppVeyor if we're in AppVeyor

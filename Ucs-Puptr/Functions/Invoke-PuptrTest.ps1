@@ -1,4 +1,4 @@
-#requires -version 4 -Modules Cisco.UcsManager
+#requires -version 4
 
 function Invoke-PuptrTest {
     <#
