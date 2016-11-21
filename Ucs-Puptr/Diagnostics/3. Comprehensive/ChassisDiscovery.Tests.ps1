@@ -6,29 +6,39 @@ Param(
     [switch]$Remediate = $false,
 
     # Optionally define a different config file to use.
-    [string]$Config
+    [string]$ConfigName
 )
 
 Process {
     # Tests
     Describe -Name 'Server Configuration: Chassis Discovery Policy' -Tag @('server','no-impact') -Fixture {
-        # Project Environment Variables      
-        $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
-        $CredentialDir = "$ProjectDir\Credentials"
-        
-        # Config Variables
-        . $Config
-        [string]$PuptrUser = $config.connection.Username
-        [string[]]$UcsDomains = $config.connection.Domain
-        [string]$MinimumChassisUplinks = $config.server.MinimumChassisUplinks
-        [string]$LinkAggregation = $config.server.LinkAggregation
+        BeforeAll {
+            # Project Environment Variables 
+            $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
+            $ConfigDir = $ProjectDir | Join-Path -ChildPath 'Configs'
+            $ConfigFile = $ConfigDir | Join-Path -ChildPath "$ConfigName.ps1"
+            $CredentialDir = $ProjectDir | Join-Path -ChildPath 'Credentials'
+            
+            # Ensure $UcsConfiguration is loaded into the session
+            . $ConfigFile
 
-        # Importing credentials
-        $SecurePassword = Get-Content -Path "$CredentialDir\$PuptrUser.txt" | ConvertTo-SecureString
-        $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
+            # Set variables from .connection
+            $PuptrUser = $UcsConfiguration.Connection.Username
+            $PuptrUserName = $PuptrUser.Split('\') | Select -Last 1
+            $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
+            $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
-        # Connect to UCS 
-        Connect-Ucs -Name $UcsDomains -Credential $Credential
+            # Importing credentials
+            $SecurePassword = Get-Content -Path $PuptrUserPath | ConvertTo-SecureString
+            $Credential = [pscredential]::new($PuptrUser,$SecurePassword)
+
+            # Connect to UCS 
+            Connect-Ucs -Name $UcsDomains -Credential $Credential
+
+            # Test Variables
+            $MinimumChassisUplinks = $UcsConfiguration.Equipment.MinimumChassisUplinks
+            $LinkAggregation = $UcsConfiguration.Equipment.LinkAggregation
+        }
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
