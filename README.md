@@ -15,22 +15,18 @@ You'll just need a few free pieces of software.
 
 # Installation
 
-Because this repository is simply a collection of Pester tests, there is no installation. Download the files 
-contained within this project anywhere you want.
+Install-Module Ucs-Puptr
 
 # Basic Usage Instructions
 
-1. Edit configuration file. (Default: `Ucs-Puptr\Configs\Config.ps1`)
-2. Run: ./Invoke-UcsPuptr.ps1 -Initialize
-3. If all initalization tests pass run:
-4. ./Invoke-UcsPuptr.ps1
+1. New-PuptrConfig -Name Test
+2. Edit the file that comes up to match your environment
+3. Invoke-PuptrTest -ConfigName Test
 
-To include remediation run: ./Invoke-UcsPuptr.ps1 -Remediate
+To include remediation run: Invoke-PuptrTest -ConfigName Test -Remediate
 
-> The end-state configuration for each Cisco UCS component is stored inside of the `Config.ps1` file. Make sure to read through 
-> the configuration items and set them with your specific environmental variables
-
-See the [wiki](https://github.com/FooBartn/Ucs-Puptr/wiki) for further examples.
+> The end-state configuration for each Cisco UCS component is stored inside of the configuration file. 
+>Make sure to read through the configuration items and set them with your specific environmental variables
 
  
 # Future
