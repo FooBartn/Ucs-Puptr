@@ -2,7 +2,8 @@
 ###########################
 Tests/TestVars
 PlayerOne.txt
-Gui
+Gui/ConfigForm.Xml
+Gui/GuiForm.ps1
 
 
 # Compiled source #
