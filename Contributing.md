@@ -1,6 +1,9 @@
 # Contribution
 
-Everyone is welcome to contribute to this project. The goal is to add fine-grained tests that look at specific values within a vSphere environment, compare them to defined configuration value, and optionally remediate discrepancies if the user so decides. However, there is nothing wrong with submitting a pull request (PR) with a non-remediating test. This is a great starting point for those newer to coding with PowerShell!
+Everyone is welcome to contribute to this project. The goal is to add fine-grained tests that look at specific values 
+within a Cisco UCS environment, compare them to defined configuration value, and optionally remediate discrepancies if 
+the user so decides. However, there is nothing wrong with submitting a pull request (PR) with a non-remediating test. 
+This is a great starting point for those newer to coding with PowerShell!
 
 ### Contribution Requirements
 
