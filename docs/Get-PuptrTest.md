@@ -1,7 +1,7 @@
 Ucs-Puptr aims to make management of tests that do/do not apply to your environment very simple.
 You can easily get a list of available tests:
 
-# Get All Tests
+# Get Puptr Tests
 
 Run Get-PuptrTest
 
