@@ -1,7 +1,7 @@
 Ucs-Puptr aims to make management of tests that do/do not apply to your environment very simple.
 You can easily disable any test:
 
-# Disable Example
+# Disable Puptr Tests
 
 You can use Get-PuptrTest to get a list of available tests and their state:
 

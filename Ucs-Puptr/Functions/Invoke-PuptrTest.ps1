@@ -31,7 +31,6 @@ function Invoke-PuptrTest {
 
         .PARAMETER ExcludeTag
         Informs Invoke-Pester to not run blocks tagged with the tags specified.
-        Default: 'ucspuptr' : Keeps invoke-puptr from running pester on itself.
 
         .PARAMETER OutputFormat
         OutputFile format
@@ -39,10 +38,6 @@ function Invoke-PuptrTest {
 
         .PARAMETER OutputFile
         Location to dump pester results in format: $OutputFormat
-
-        .PARAMETER Initialize
-        Initial setup after you have edited your configuration files
-        Default = $false
 
         .INPUTS
         None
