@@ -25,9 +25,10 @@ Install-Module Ucs-Puptr
 
 To include remediation run: Invoke-PuptrTest -ConfigName Test -Remediate
 
-> The end-state configuration for each Cisco UCS component is stored inside of the configuration file. 
->Make sure to read through the configuration items and set them with your specific environmental variables
+**IMPORTANT:** 
+* Make sure to read through the configuration items and set them with your specific environmental variables
 
+>ReadTheDocs for more info: [Ucs-Puptr Documentation](http://ucs-puptr.readthedocs.io)
  
 # Future
 
