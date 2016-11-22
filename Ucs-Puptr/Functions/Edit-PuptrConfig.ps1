@@ -21,10 +21,8 @@ function Edit-PuptrConfig {
         None
 
         .NOTES
-        Version:        1.1
         Author:         Joshua Barton (@foobartn)
-        Creation Date:  10.19.2016
-        Purpose/Change: Initial script development
+        Creation Date:  11.21.2016
 
         .EXAMPLE
         Edit Prod configuration
