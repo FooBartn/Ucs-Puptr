@@ -25,6 +25,9 @@ Install-Module Ucs-Puptr
 
 To include remediation run: Invoke-PuptrTest -ConfigName Test -Remediate
 
+## Example
+[![Source](images/invoke-example.png)](docs/images/invoke-example.png)
+
 **IMPORTANT:** 
 * Make sure to read through the configuration items and set them with your specific environmental variables
 
