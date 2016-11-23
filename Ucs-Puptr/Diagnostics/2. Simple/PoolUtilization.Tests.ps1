@@ -54,14 +54,14 @@ Process {
             }
 
             foreach ($PoolType in $UIDPools.Keys) {
-                It -Name "$($UcsDomain.Name) is using less than $PoolThreshold percent of the $PoolType" -Test {
-                    # Assert
-                    try {
-                        foreach ($UIDPool in $UIDPools.$PoolType) {
+                foreach ($UIDPool in $UIDPools.$PoolType) {
+                    It -Name "Pool $($UIDPool.Name) on $($UcsDomain.Name) is less than $PoolThreshold percent utilized" -Test {
+                        # Assert
+                        try {
                             ($UIDPool.Assigned * 100 / $UIDPool.Size) | Should Not BeGreaterThan $PoolThreshold
+                        } catch {
+                            throw $_
                         }
-                    } catch {
-                        throw $_
                     }
                 }
             }
