@@ -26,7 +26,7 @@ b
 To include remediation run: Invoke-PuptrTest -ConfigName Test -Remediate
 
 ## Example
-[![Source](images/invoke-example.png)](https://github.com/FooBartn/Ucs-Puptr/blob/master/docs/images/invoke-example.png)
+![Example](https://github.com/FooBartn/Ucs-Puptr/blob/master/docs/images/invoke-example.png)
 
 **IMPORTANT:** 
 * Make sure to read through the configuration items and set them with your specific environmental variables
