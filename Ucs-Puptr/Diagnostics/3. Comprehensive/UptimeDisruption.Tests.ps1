@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Maintenance Policy' -Tag @('ucsm','no-impact') -Fixture {
+    Describe -Name 'Comprehensive: Maintenance Policy' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

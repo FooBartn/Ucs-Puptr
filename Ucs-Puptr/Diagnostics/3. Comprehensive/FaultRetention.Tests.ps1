@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Fault Retention' -Tag @('ucsm','no-impact') -Fixture {
+    Describe -Name 'Comprehensive: Fault Retention' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

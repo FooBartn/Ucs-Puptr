@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Fault(s)' -Tag @('ucsm') -Fixture {
+    Describe -Name 'Simple: Fault(s)' -Tag @('simple') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

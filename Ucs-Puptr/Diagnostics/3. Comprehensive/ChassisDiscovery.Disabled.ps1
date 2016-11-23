@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Server Configuration: Chassis Discovery Policy' -Tag @('server','no-impact') -Fixture {
+    Describe -Name 'Comprehensive: Chassis Discovery Policy' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Network Configuration: Global vSANs' -Tag @('network') -Fixture {
+    Describe -Name 'Simple: Global vSANs' -Tag @('simple') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

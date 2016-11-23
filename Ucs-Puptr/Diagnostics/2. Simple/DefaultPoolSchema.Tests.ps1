@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Default Pool Schemas' -Tag @('ucsm') -Fixture {
+    Describe -Name 'Simple: Default Pool Schemas' -Tag @('simple') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

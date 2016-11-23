@@ -13,7 +13,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Network Configuration: Ports Both Enabled and Down ' -Tag @('network','no-impact') -Fixture {
+    Describe -Name 'Comprehensive: Ports Both Enabled and Down ' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName

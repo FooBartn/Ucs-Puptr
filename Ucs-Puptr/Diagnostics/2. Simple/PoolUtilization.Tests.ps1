@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'UCSM Configuration: Pool Usage Threshold' -Tag @('ucsm') -Fixture {
+    Describe -Name 'Simple: Pool Usage Threshold' -Tag @('simple') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
