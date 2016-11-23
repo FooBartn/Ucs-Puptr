@@ -43,7 +43,11 @@ Process {
             foreach ($SvcProfile in $SvcProfiles) {
                 It -Name "Service Profile $($ServiceProfile.Name) in $($UcsDomain.Name) is associated" -Test {
                     # Assert
-                    $SvcProfile.AssocState | Should Be 'associated'
+                    try {
+                        $SvcProfile.AssocState | Should Be 'associated'
+                    } catch {
+                        throw $_
+                    }
                 }
             }
         }
