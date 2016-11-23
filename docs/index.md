@@ -11,28 +11,8 @@ This is a great starting point for those newer to coding with PowerShell!
 
 ### Contribution Requirements
 
-Every test that is added to Ucs-Puptr needs three things:
+See [Contributing.Md](https://github.com/FooBartn/Ucs-Puptr/blob/master/Contributing.md) in GitHub repository.
 
-1. An update to the example [`Config.ps1`](https://github.com/FooBartn/Ucs-Puptr/blob/master/Configs/Config.ps1) file with your required configuration value(s), comments, and accepted input type.
-2. An update to the [`Config.Tests.ps1`](https://github.com/FooBartn/Ucs-Puptr/blob/master/Configs/Config.Tests.ps1) file to validate that the `Config.ps1` file contains valid entries.
-3. A test file using a properly formatted `Verb-Noun` format (use `Get-Verb` for more details) placed into the Tests folder.
+## Running Example
 
-### Your First Contribution
-
-If you're looking for your first bit of code to add, try this list:
-
-1. Identify a configuration value in your Cisco UCS environment that isn't being inspected by Ucs-Puptr.
-2. Use the [Template](https://github.com/FooBartn/Ucs-Puptr/blob/master/Templates/Test-Template.ps1) to create a test that inspects this value and try it out locally.
-3. At this point you can submit a pull request (PR) for a non-remediating test. If someone else wants the remediation code added, they will grab your code and write that portion.
-    * Non-remediating tests go in the Simple directory
-4. Optionally, write the remediation portion yourself to make a fully remediating test.
-    * Remediating tests go in the Comprehensive directory
-
-### Contribution Process
-
-1. Create a fork of the project into your own repository.
-2. From your fork, create a new feature branch (other than master) that expresses your feature or enhancement.
-3. Make all your necessary changes in your feature branch.
-4. Create a pull request with a description on what was added or removed and details explaining the changes in lines of code.
-
-If approved, project owners will merge it.
+[![Source](images/invoke-example.png)](images/invoke-example.png)
