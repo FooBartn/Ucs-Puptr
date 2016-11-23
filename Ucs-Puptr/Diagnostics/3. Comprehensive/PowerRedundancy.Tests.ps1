@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Comprehensive: Power Control Policy' -Tag @('comprehensive','no-impact') -Fixture {
+    Describe -Name 'Comprehensive: Power Redundancy' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
