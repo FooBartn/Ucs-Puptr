@@ -18,7 +18,7 @@ You'll just need a few free pieces of software.
 Install-Module Ucs-Puptr
 
 # Basic Usage Instructions
-
+b
 1. New-PuptrConfig -Name Test
 2. Edit the file that comes up to match your environment
 3. Invoke-PuptrTest -ConfigName Test
@@ -26,7 +26,7 @@ Install-Module Ucs-Puptr
 To include remediation run: Invoke-PuptrTest -ConfigName Test -Remediate
 
 ## Example
-[![Source](images/invoke-example.png)](docs/images/invoke-example.png)
+[![Source](images/invoke-example.png)](https://github.com/FooBartn/Ucs-Puptr/blob/master/docs/images/invoke-example.png)
 
 **IMPORTANT:** 
 * Make sure to read through the configuration items and set them with your specific environmental variables
