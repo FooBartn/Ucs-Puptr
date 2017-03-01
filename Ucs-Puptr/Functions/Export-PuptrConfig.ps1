@@ -48,7 +48,7 @@ function Export-PuptrConfig {
     #---------------------------------------------------------[Execute Script]------------------------------------------------------
     try {
         [ValidateNotNullOrEmpty()]$PuptrConfig = Get-PuptrConfig |
-        Where {
+        Where-Object {
             $_.Name -eq $Name
         }
 

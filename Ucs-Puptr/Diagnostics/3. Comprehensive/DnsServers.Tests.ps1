@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+    Describe -Name 'Comprehensive: DNS Servers' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
@@ -36,29 +36,32 @@ Process {
             Connect-Ucs -Name $UcsDomains -Credential $Credential
 
             # Test Variables
-            # Variable1
-            # Variable2
+            $DnsServers = $UcsConfiguration.Admin.DnsServers
         }
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            It -Name "$($UcsDomain.Name) has..." -Test {
-                #
-                # Run commands to gather data
-                #
+            foreach ($DnsServer in $DnsServers) {
+                It -Name "$($UcsDomain.Name) includes DNS Server: $DnsServer" -Test {
+                    #
+                    # Run commands to gather data
+                    $DnsServerList = Get-UcsDnsServer -Ucs $UcsDomain.Name
 
-                # Assert
-                try {
-                 #   Data gathered | Should ...
-                } catch {
-                    if ($Remediate) {
-                        Write-Warning -Message $_
-                        Write-Warning -Message "Enter Remediation Message Here" 
-                    } else {
-                        throw $_
+                    # Assert
+                    try {
+                        $DnsServerList -contains $DnsServer | Should Be True
+                    } catch {
+                        if ($Remediate) {
+                            Write-Warning -Message $_
+                            Write-Warning -Message "Adding DNS Server: $DnsServer"
+                            Get-UcsDns -Ucs $UcsDomain.Name | Add-UcsDnsServer -Name $DnsServer
+                        } else {
+                            throw $_
+                        }
                     }
                 }
             }
+            
         }
 
         # Disconnect from UCS

@@ -24,7 +24,7 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserName = $PuptrUser.Split('\') | Select -Last 1
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
             $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
@@ -44,16 +44,16 @@ Process {
         foreach ($UcsDomain in (Get-UcsStatus)) {
             It -Name "$($UcsDomain.Name) has a retention policy of: $FaultRetentionInterval" -Test {
                 # Run commands to gather data
-                $FaultPolicy = (Get-UcsFaultPolicy -Ucs $UcsDomain.Name).RetentionInterval
+                $FaultPolicy = Get-UcsFaultPolicy -Ucs $UcsDomain.Name
 
                 # Assert
                 try {
-                    $FaultPolicy | Should Be $FaultRetentionInterval
+                    $FaultPolicy.RetentionInterval | Should Be $FaultRetentionInterval
                 } catch {
                     if ($Remediate) {
                         Write-Warning -Message $_
                         Write-Warning -Message "Setting fault retention on $($UcsDomain.Name): $FaultRetentionInterval"
-                        Set-UcsFaultPolicy -Ucs $UcsDomain.Name -RetentionInterval $FaultRetentionInterval -Force
+                        $FaultPolicy | Set-UcsFaultPolicy -RetentionInterval $FaultRetentionInterval -Force
                     } else {
                         throw $_
                     }

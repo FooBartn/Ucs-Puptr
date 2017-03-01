@@ -24,7 +24,7 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserName = $PuptrUser.Split('\') | Select -Last 1
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
             $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
@@ -44,13 +44,13 @@ Process {
 
             $UIDPools = @{
                 MacPool = Get-UcsMacPool -Ucs $UcsDomain.Name |
-                    Where {$_.Size -ne 0}
+                    Where-Object {$_.Size -ne 0}
                 UuidPool = Get-UcsUuidSuffixPool -Ucs $UcsDomain.Name |
-                    Where {$_.Size -ne 0}
+                    Where-Object {$_.Size -ne 0}
                 WwnnPool = Get-UcsWwnPool -Ucs $UcsDomain.Name |
-                    Where {$_.Purpose -eq 'node-wwn-assignment' -AND $_.Size -ne 0}
+                    Where-Object {$_.Purpose -eq 'node-wwn-assignment' -AND $_.Size -ne 0}
                 WwpnPool = Get-UcsWwnPool -Ucs $UcsDomain.Name | 
-                    Where {$_.Purpose -eq 'port-wwn-assignment'-AND $_.Size -ne 0}
+                    Where-Object {$_.Purpose -eq 'port-wwn-assignment'-AND $_.Size -ne 0}
             }
 
             foreach ($PoolType in $UIDPools.Keys) {

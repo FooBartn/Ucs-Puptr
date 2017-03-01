@@ -1,13 +1,13 @@
 #requires -version 4
 
-function Get-PuptrConfig {
+function Get-PuptrCredential {
     <#
 
         .SYNOPSIS
-        Gets list of UcsPuptr configurations
+        Gets list of current UcsPuptr credentials
 
         .DESCRIPTION
-        This function gets a list of UcsPuptr configurations and returns their names
+        This function gets a list of UcsPuptr credentials and returns their names
 
         .INPUTS
         None
@@ -17,10 +17,10 @@ function Get-PuptrConfig {
 
         .NOTES
         Author:         Joshua Barton (@foobartn)
-        Creation Date:  11.21.2016
+        Creation Date:  02.20.2017
 
         .EXAMPLE
-        Get-PuptrConfig
+        Get-PuptrCredential
 
     #>
 
@@ -28,10 +28,10 @@ function Get-PuptrConfig {
 
     # Project Environment Variables 
     $ProjectDir = (Get-Item $PSScriptRoot).parent.FullName
-    $ConfigDir = $ProjectDir | Join-Path -ChildPath 'Configs'
+    $CredentialDir = $ProjectDir | Join-Path -ChildPath 'Credentials'
 
     #---------------------------------------------------------[Execute Script]------------------------------------------------------
-    Get-ChildItem -Path $ConfigDir | ForEach-Object {
+    Get-ChildItem -Path $CredentialDir | ForEach-Object {
         $ConfigObject = [PsCustomObject]@{
             Name = $_.Name.Split('.') | Select-Object -First 1
             Path = $_.FullName

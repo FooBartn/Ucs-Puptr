@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+    Describe -Name 'Comprehensive: Default vHBA Behavior' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
@@ -36,24 +36,25 @@ Process {
             Connect-Ucs -Name $UcsDomains -Credential $Credential
 
             # Test Variables
-            # Variable1
+            $DefaultVhbaBehavior = $UcsConfiguration.San.DefaultVhbaBehavior
             # Variable2
         }
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            It -Name "$($UcsDomain.Name) has..." -Test {
+            It -Name "$($UcsDomain.Name) has a default vHBA behavior of $DefaultVhbaBehavior" -Test {
                 #
                 # Run commands to gather data
-                #
+                $VhbaBehPolicy = Get-UcsVnicVhbaBehPolicy -Ucs $UcsDomain.Name
 
                 # Assert
                 try {
-                 #   Data gathered | Should ...
+                    $VhbaBehPolicy.Action | Should Be $DefaultVhbaBehavior
                 } catch {
                     if ($Remediate) {
                         Write-Warning -Message $_
-                        Write-Warning -Message "Enter Remediation Message Here" 
+                        Write-Warning -Message "Changing default vHBA behavior to $DefaultVhbaBehavior"
+                        $VhbaBehPolicy | Set-UcsVnicVhbaBehPolicy -Action $DefaultVhbaBehavior -Force
                     } else {
                         throw $_
                     }

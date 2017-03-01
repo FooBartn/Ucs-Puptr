@@ -91,7 +91,7 @@ $UcsConfiguration.Equipment = @{
 
 #>
 
-$UcsConfiguration.admin = @{
+$UcsConfiguration.Admin = @{
     Fault = @{
         Severity = @('critical','major')
         RetentionInterval = '07:00:00:00'
@@ -189,6 +189,7 @@ $UcsConfiguration.Server = @{
         
         NetworkControlPolicy = [hashtable] Network Control Policy setting
             Format: [string]policyname =
+                Org = [string] Name of UCSM Org that policy belongs to (default is root)
                 CDPState = [string] Cisco Discovery Protocol state (enabled/disabled)
                 MACRegisterMode = [string] MAC address register mode (only-native-vlan/all-host-vlans)
                 UplinkFailureAction = [string] Action to take on  uplink failure (link-down/warning)
@@ -237,6 +238,7 @@ $UcsConfiguration.Server = @{
 $UcsConfiguration.Lan = @{
     NetworkControlPol = @{
         default = @{
+            Org = 'root'
             CDPState = [string]'enabled'
             MACRegisterMode = [string]'only-native-vlan'
             UplinkFailureAction = [string]'link-down'

@@ -14,8 +14,7 @@ You'll just need a few free pieces of software.
 3. [Pester](https://github.com/pester/Pester)
 
 # Installation
-
-Install-Module Ucs-Puptr
+Install-⁠Module -⁠Name ucs-puptr -⁠Scope CurrentUser
 
 # Basic Usage Instructions
 

@@ -39,7 +39,7 @@ function Disable-PuptrTest {
     #---------------------------------------------------------[Execute Script]------------------------------------------------------
     try {
         [ValidateNotNullOrEmpty()]$PuptrTest = Get-PuptrTest -State Enabled |
-        Where {
+        Where-Object {
             $_.Name -eq $Name
         }
 

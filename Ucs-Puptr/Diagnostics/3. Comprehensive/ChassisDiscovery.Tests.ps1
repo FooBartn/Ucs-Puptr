@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Comprehensive: Chassis Discovery Policy' -Tag @('comprehensive','no-impact') -Fixture {
+    Describe -Name 'Comprehensive: Chassis Discovery Policy' -Tag @('comprehensive','impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
@@ -24,7 +24,7 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserName = $PuptrUser.Split('\') | Select -Last 1
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
             $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 

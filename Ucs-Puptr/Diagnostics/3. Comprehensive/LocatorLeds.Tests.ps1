@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+    Describe -Name 'Comprehensive: Disabling Locator LEDs' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
@@ -35,27 +35,27 @@ Process {
             # Connect to UCS 
             Connect-Ucs -Name $UcsDomains -Credential $Credential
 
-            # Test Variables
-            # Variable1
-            # Variable2
         }
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            It -Name "$($UcsDomain.Name) has..." -Test {
-                #
-                # Run commands to gather data
-                #
+            #
+            # Run commands to gather data
+            $LocatorLeds = Get-UcsLocatorLed
 
-                # Assert
-                try {
-                 #   Data gathered | Should ...
-                } catch {
-                    if ($Remediate) {
-                        Write-Warning -Message $_
-                        Write-Warning -Message "Enter Remediation Message Here" 
-                    } else {
-                        throw $_
+            foreach ($LocatorLed in $LocatorLeds) {
+                It -Name "$($LocatorLed.Dn) in $($UcsDomain.Name) is not enabled" -Test {
+                    # Assert
+                    try {
+                    $LocatorLed.OperState | Should Be "off"
+                    } catch {
+                        if ($Remediate) {
+                            Write-Warning -Message $_
+                            Write-Warning -Message "Disabling locator LED: $($LocatorLed.Dn)"
+                            $LocatorLed | Set-UcsLocatorLed -AdminState off -Force
+                        } else {
+                            throw $_
+                        }
                     }
                 }
             }

@@ -1,4 +1,4 @@
-﻿#requires -Modules Pester, Cisco.UcsManager
+#requires -Modules Pester, Cisco.UcsManager
 
 [CmdletBinding()]
 Param(
@@ -15,9 +15,8 @@ Process {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
-            $ConfigName = "$ConfigName.ps1"
             $ConfigDir = $ProjectDir | Join-Path -ChildPath 'Configs'
-            $ConfigFile = $ConfigDir | Join-Path -ChildPath $ConfigName
+            $ConfigFile = $ConfigDir | Join-Path -ChildPath "$ConfigName.ps1"
             $CredentialDir = $ProjectDir | Join-Path -ChildPath 'Credentials'
             
             # Ensure $UcsConfiguration is loaded into the session
@@ -25,7 +24,8 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUser.txt"
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
+            $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
             # Importing credentials
@@ -44,13 +44,13 @@ Process {
 
             $UIDPools = @{
                 MacPool = Get-UcsMacPool -Ucs $UcsDomain.Name |
-                    Where {$_.Size -ne 0}
+                    Where-Object {$_.Size -ne 0}
                 UuidPool = Get-UcsUuidSuffixPool -Ucs $UcsDomain.Name |
-                    Where {$_.Size -ne 0}
+                    Where-Object {$_.Size -ne 0}
                 WwnnPool = Get-UcsWwnPool -Ucs $UcsDomain.Name |
-                    Where {$_.Purpose -eq 'node-wwn-assignment' -AND $_.Size -ne 0}
+                    Where-Object {$_.Purpose -eq 'node-wwn-assignment' -AND $_.Size -ne 0}
                 WwpnPool = Get-UcsWwnPool -Ucs $UcsDomain.Name | 
-                    Where {$_.Purpose -eq 'port-wwn-assignment'-AND $_.Size -ne 0}
+                    Where-Object {$_.Purpose -eq 'port-wwn-assignment'-AND $_.Size -ne 0}
             }
 
             foreach ($PoolType in $UIDPools.Keys) {

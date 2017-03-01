@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+    Describe -Name 'Comprehensive: Default vNIC Behavior' -Tag @('comprehensive','no-impact') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
@@ -36,24 +36,25 @@ Process {
             Connect-Ucs -Name $UcsDomains -Credential $Credential
 
             # Test Variables
-            # Variable1
+            $DefaultVnicBehavior = $UcsConfiguration.Lan.DefaultVnicBehavior
             # Variable2
         }
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            It -Name "$($UcsDomain.Name) has..." -Test {
+            It -Name "$($UcsDomain.Name) has a default vNIC behavior of $DefaultVnicBehavior" -Test {
                 #
                 # Run commands to gather data
-                #
+                $VnicBehPolicy = Get-UcsVnicVnicBehPolicy -Ucs $UcsDomain.Name
 
                 # Assert
                 try {
-                 #   Data gathered | Should ...
+                    $VnicBehPolicy.Action | Should Be $DefaultVnicBehavior
                 } catch {
                     if ($Remediate) {
                         Write-Warning -Message $_
-                        Write-Warning -Message "Enter Remediation Message Here" 
+                        Write-Warning -Message "Changing default vNIC behavior to $DefaultVnicBehavior"
+                        $VnicBehPolicy | Set-UcsVnicVnicBehPolicy -Action $DefaultVnicBehavior -Force
                     } else {
                         throw $_
                     }

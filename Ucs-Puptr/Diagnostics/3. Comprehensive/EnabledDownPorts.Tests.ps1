@@ -26,7 +26,7 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserName = $PuptrUser.Split('\') | Select -Last 1
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
             $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
@@ -45,9 +45,9 @@ Process {
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
             $EthPorts = Get-UcsUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' |
-                where {$_.OperState -ne 'up'}
+                Where-Object {$_.OperState -ne 'up'}
             $FcPorts = Get-UcsFcUplinkPort -Ucs $UcsDomain.Name -AdminState 'enabled' |
-                where {$_.OperState -ne 'up'}
+                Where-Object {$_.OperState -ne 'up'}
 
             It -Name "$($UcsDomain.Name) has no uplink ports both enabled and down" -Test {
                 # Assert

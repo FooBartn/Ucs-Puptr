@@ -1,16 +1,16 @@
 #requires -version 4
 
-function Remove-PuptrConfig {
+function Remove-PuptrCredential {
     <#
 
         .SYNOPSIS
-        Remove a configuration file
+        Remove a credential file
 
         .DESCRIPTION
-        This function removes an existing UcsPuptr configuration file
+        This function removes an existing UcsPuptr credential file
 
         .PARAMETER Name
-        Name of configuration file (Test, Prod, Peanuts, etc)
+        User name / name of the credential file
 
         .INPUTS
         None
@@ -20,7 +20,7 @@ function Remove-PuptrConfig {
 
         .NOTES
         Author:         Joshua Barton (@foobartn)
-        Creation Date:  11.21.2016
+        Creation Date:  02.20.2017
 
         .EXAMPLE
         Remove a configuration named Prod
@@ -40,19 +40,19 @@ function Remove-PuptrConfig {
 
     #---------------------------------------------------------[Execute Script]------------------------------------------------------
     try {
-        [ValidateNotNullOrEmpty()]$PuptrConfig = Get-PuptrConfig |
+        [ValidateNotNullOrEmpty()]$PuptrCredential = Get-PuptrCredential |
         Where-Object {
             $_.Name -eq $Name
         }
-        if($pscmdlet.ShouldProcess($PuptrConfig.Path)) {
-            Write-Verbose "Removing Configuration: $($PuptrConfig.Name)"
-            Remove-Item -Path $PuptrConfig.Path -Force
+        if($pscmdlet.ShouldProcess($PuptrCredential.Path)) {
+            Write-Verbose "Removing Credential: $($PuptrCredential.Name)"
+            Remove-Item -Path $PuptrCredential.Path -Force
         }
     } catch {
-        if (Get-PuptrConfig | Where {$_.Name -eq $Name}) {
-            Write-Warning -Message "Unable to remove configuration file: $Name"
+        if (Get-PuptrConfig | Where-Object {$_.Name -eq $Name}) {
+            Write-Warning -Message "Unable to remove credential file: $Name"
         } else {
-            Write-Warning -Message "Unable to find configuration file: $Name"
+            Write-Warning -Message "Unable to find credential file: $Name"
         }
     }
 }

@@ -214,7 +214,7 @@ Process {
             $LanKeys = 'NetworkControlPol|UDLDLinkProfile|UDLDLinkPolicy|LinkProtocolPol|'
             $LanKeys += 'LACPPolicy|PFCPolicy|DefaultVnicBehavior|VlanGroups|Vlans|'
             $LanKeys += 'FabricA|FabricB'
-            $NetControlPolKeys = 'CDPState|MACRegisterMode|UplinkFailureAction|'
+            $NetControlPolKeys = 'Org|CDPState|MACRegisterMode|UplinkFailureAction|'
             $NetControlPolKeys += 'MacForging|LLDPTransmit|LLDPReceive'
             $LinkPolicyKeys = 'UDLDState|UDLDMode'
             $LinkProtoKeys = 'UDLDRecoveryAction|UDLDRecoveryInterval'
@@ -235,7 +235,9 @@ Process {
             $UcsConfiguration.Lan.NetworkControlPol.Keys.Count | Should Not Be 0
             foreach ($Policy in $UcsConfiguration.Lan.NetworkControlPol.Keys) {
                 $UcsConfiguration.Lan.NetworkControlPol.$Policy.Keys | Should Match $NetControlPolKeys
-                $UcsConfiguration.Lan.NetworkControlPol.$Policy.Keys.Count | Should Be 6
+                $UcsConfiguration.Lan.NetworkControlPol.$Policy.Keys.Count | Should Be 7
+                $UcsConfiguration.Lan.NetworkControlPol.$Policy.Org | Should Not BeNullOrEmpty
+                $UcsConfiguration.Lan.NetworkControlPol.$Policy.Org | Should BeOfType String
                 $UcsConfiguration.Lan.NetworkControlPol.$Policy.CDPState | Should Match $EnablePattern
                 $UcsConfiguration.Lan.NetworkControlPol.$Policy.CDPState | Should BeOfType String
                 $UcsConfiguration.Lan.NetworkControlPol.$Policy.MacRegisterMode | Should Match $MacRegisterVals

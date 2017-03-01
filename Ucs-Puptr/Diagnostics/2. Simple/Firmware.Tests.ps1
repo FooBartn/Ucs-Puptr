@@ -36,8 +36,7 @@ Process {
             Connect-Ucs -Name $UcsDomains -Credential $Credential
 
             # Test Variables
-            # Variable1
-            # Variable2
+            $ExpectedFirmware = $UcsConfiguration.Equipment.FirmwareVersion
         }
 
         # Run test case
@@ -45,18 +44,13 @@ Process {
             It -Name "$($UcsDomain.Name) has..." -Test {
                 #
                 # Run commands to gather data
-                #
+                $FirmwareVersion = (Get-UcsPsSession -Ucs $UcsDomain.Name).Version
 
                 # Assert
                 try {
-                 #   Data gathered | Should ...
+                    $FirmwareVersion | Should -Be $ExpectedFirmware
                 } catch {
-                    if ($Remediate) {
-                        Write-Warning -Message $_
-                        Write-Warning -Message "Enter Remediation Message Here" 
-                    } else {
-                        throw $_
-                    }
+                    throw $_
                 }
             }
         }

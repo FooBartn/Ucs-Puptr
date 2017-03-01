@@ -41,13 +41,13 @@ function Edit-PuptrConfig {
     #---------------------------------------------------------[Execute Script]------------------------------------------------------
     try {
         [ValidateNotNullOrEmpty()]$PuptrConfig = Get-PuptrConfig |
-        Where {
+        Where-Object {
             $_.Name -eq $Name
         }
         Write-Verbose "Opening configuration: $($PuptrConfig.Name)"
         Invoke-Item -Path $PuptrConfig.Path
     } catch {
-        if (Get-PuptrConfig | Where {$_.Name -eq $Name}) {
+        if (Get-PuptrConfig | Where-Object {$_.Name -eq $Name}) {
             Write-Warning -Message "Unable to edit configuration file: $Name"
             $_.ErrorDetails
         } else {

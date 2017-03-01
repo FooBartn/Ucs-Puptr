@@ -70,14 +70,14 @@ InModuleScope 'Ucs-Puptr' {
         Context -Name "Get,Enable,Disable-PuptrTest" -Fixture {
             It "Should disable a test" {
                 Disable-PuptrTest -Name ChassisDiscovery
-                (Get-PuptrTest | Where {
+                (Get-PuptrTest | Where-Object {
                     $_.Name -eq 'ChassisDiscovery'
                 }).State | Should Be 'Disabled' 
             }
 
             It "Should enable a test" {
                 Enable-PuptrTest -Name ChassisDiscovery
-                (Get-PuptrTest | Where {
+                (Get-PuptrTest | Where-Object {
                     $_.Name -eq 'ChassisDiscovery'
                 }).State | Should Be 'Enabled'
             }

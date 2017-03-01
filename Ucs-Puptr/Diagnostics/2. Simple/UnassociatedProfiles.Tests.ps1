@@ -1,4 +1,4 @@
-﻿#requires -Modules Pester, Cisco.UcsManager
+#requires -Modules Pester, Cisco.UcsManager
 
 [CmdletBinding()]
 Param(
@@ -15,9 +15,8 @@ Process {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
-            $ConfigName = "$ConfigName.ps1"
             $ConfigDir = $ProjectDir | Join-Path -ChildPath 'Configs'
-            $ConfigFile = $ConfigDir | Join-Path -ChildPath $ConfigName
+            $ConfigFile = $ConfigDir | Join-Path -ChildPath "$ConfigName.ps1"
             $CredentialDir = $ProjectDir | Join-Path -ChildPath 'Credentials'
             
             # Ensure $UcsConfiguration is loaded into the session
@@ -25,7 +24,8 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUser.txt"
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
+            $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
             # Importing credentials

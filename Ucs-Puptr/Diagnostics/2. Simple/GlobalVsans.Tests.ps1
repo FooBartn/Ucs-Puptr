@@ -24,7 +24,7 @@ Process {
 
             # Set variables from .connection
             $PuptrUser = $UcsConfiguration.Connection.Username
-            $PuptrUserName = $PuptrUser.Split('\') | Select -Last 1
+            $PuptrUserName = $PuptrUser.Split('\') | Select-Object -Last 1
             $PuptrUserPath = $CredentialDir | Join-Path -ChildPath "$PuptrUserName.txt"
             $UcsDomains = $UcsConfiguration.Connection.UcsDomain
 
@@ -39,7 +39,7 @@ Process {
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
             $Vsans = Get-UcsSanCloud | Get-UcsVsan |
-                    where {$_.Id -ne 1} 
+                    Where-Object {$_.Id -ne 1} 
             foreach ($Vsan in $Vsans) {
                 It -Name "$($UcsDomain.Name) vSAN $($Vsan.Id) is not a global vSAN" -Test {
                     # Assert

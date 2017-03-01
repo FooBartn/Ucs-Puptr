@@ -10,7 +10,7 @@ Param(
 )
 
 Process {
-    Describe -Name 'Configuration Integration Testing' -Tag @('config','integration') -Fixture {
+    Describe -Name 'Configuration Integration Testing' -Tag @('setup') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
