@@ -45,7 +45,8 @@ Process {
                 It -Name "$($UcsDomain.Name) includes DNS Server: $DnsServer" -Test {
                     #
                     # Run commands to gather data
-                    $DnsServerList = Get-UcsDnsServer -Ucs $UcsDomain.Name
+                    $DnsServerList = Get-UcsDnsServer -Ucs $UcsDomain.Name |
+                        Select-Object -ExpandProperty Name
 
                     # Assert
                     try {

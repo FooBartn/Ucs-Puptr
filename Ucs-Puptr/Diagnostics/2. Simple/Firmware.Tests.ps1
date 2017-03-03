@@ -11,7 +11,7 @@ Param(
 
 Process {
     # Tests
-    Describe -Name 'Describe Whats Happening' -Tag @('Set','Tags','Here') -Fixture {
+    Describe -Name 'Simple: UCSM Firmware Version' -Tag @('simple') -Fixture {
         BeforeAll {
             # Project Environment Variables 
             $ProjectDir = (Get-Item $PSScriptRoot).parent.parent.FullName
@@ -41,7 +41,7 @@ Process {
 
         # Run test case
         foreach ($UcsDomain in (Get-UcsStatus)) {
-            It -Name "$($UcsDomain.Name) has..." -Test {
+            It -Name "$($UcsDomain.Name) has a UCSM firmware version of $ExpectedFirmware" -Test {
                 #
                 # Run commands to gather data
                 $FirmwareVersion = (Get-UcsPsSession -Ucs $UcsDomain.Name).Version
